@@ -7,6 +7,7 @@ final project for SE first sem
 
 ## Resources 
 - Github repository: https://github.com/PZYCO20/SE_finalProject.git
+- Game dev 101: https://www.youtube.com/watch?v=eI9idPTT0c4&t=5966s
 
 ## 90s game
 
