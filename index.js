@@ -8,7 +8,7 @@
 // git push origin main
 // 
 // more git tutorials here
-//https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository
+// https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository
 //
 // You can add notes here on the top page.
 
@@ -16,5 +16,9 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
-ctx.fillStyle = "green";
+// sets the canvas width and hight dynamically
+canvas.width = innerWidth 
+canvas.height = innerHeight
+
+ctx.fillStyle = "red";
 ctx.fillRect(10, 10, 100, 100);
