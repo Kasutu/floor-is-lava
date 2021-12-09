@@ -11,12 +11,18 @@ final project for SE first sem
 - canvas smooth animation cheat sheet: https://spicyyoghurt.com/tutorials/html5-javascript-game-development/create-a-smooth-canvas-animation
 
 # The Team
-- Jerome Cabugwason
-- Jaycelle Arianne Basco
-- Roel adrian celebria
+### Jerome Cabugwason
+  - core code and optimization design
+  - graphics
 
-## 90s game
-
+### Jaycelle Arianne Basco
+  - Idea
+  - Story
+  - Code
+### Roel adrian celebria
+  - Graphics
+  - Code
+  - Story
 
 ## Technical knowledge
 - projectiles
