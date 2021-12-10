@@ -1,5 +1,8 @@
 # SE_finalProject
-final project for SE first sem 
+final project for SE first sem
+
+# Floor is lava
+> A platform game that the floor is lava. Hop on to platforms and climb to the top score !
 
 -------------------------------------------------------
 
