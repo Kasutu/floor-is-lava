@@ -11,6 +11,7 @@
 // https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository
 //
 // You can add notes here on the top page.
+<<<<<<< Updated upstream
 
 //begin
 //variable initialization
@@ -29,10 +30,29 @@ window.onload = pageLoad(); //fires after the page has finished loading
 function pageLoad() {
   canvas = document.querySelector('canvas');
   ctx = canvas.getContext('2d');
+=======
+//
+//
+//
+//
+//Begin
+let canvas;
+let ctx;
+let currentTime;
+let secondsPassed = 0;
+let lastFrame = 0;
+
+//starts the game
+function pageLoad() {
+  canvas = document.querySelector('canvas');
+  ctx = canvas.getContext('2d');
+  currentTime = Date.now();
+>>>>>>> Stashed changes
 
   // sets the canvas width and hight dynamically
   canvas.width = innerWidth;
   canvas.height = innerHeight;
+<<<<<<< Updated upstream
 
   // Start the first frame request
   window.requestAnimationFrame(gameLoop);
@@ -76,3 +96,18 @@ function draw() {
   ctx.fillRect(100, 50, 200, 175);
 }
 /*==========DELETE BEFORE PASSING END==========*/
+=======
+}
+
+function gameLoop(currentTime) {
+  // Calculate how much time has passed
+  delta = (currentTime - lastFrame) / 1000;
+  lastFrame = currentTime;
+
+  // Pass the delta time to the update
+  update(delta);
+  draw();
+
+  requestAnimationFrame(gameLoop);
+}
+>>>>>>> Stashed changes
