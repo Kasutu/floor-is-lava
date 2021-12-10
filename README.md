@@ -21,7 +21,7 @@ final project for SE first sem
 - TEST WEBPAGE: https://pzyco20.github.io/SE_finalProject/
 - Github repository: https://github.com/PZYCO20/SE_finalProject.git
 - Game dev 101: https://www.youtube.com/watch?v=eI9idPTT0c4&t=5966s
-- canvas smooth animation cheat sheet: https://spicyyoghurt.com/tutorials/html5-javascript-game-development/create-a-smooth-canvas-animation
+- canvas game tutorial: https://spicyyoghurt.com/tutorials/html5-javascript-game-development/create-a-smooth-canvas-animation
 - Simple 2d game engine: https://developer.ibm.com/tutorials/wa-build2dphysicsengine/
 - Jump physics: https://2dengine.com/?p=platformers
 - Keypress: https://medium.com/analytics-vidhya/implementing-keyboard-controls-or-shortcuts-in-javascript-82e11fccbf0c
