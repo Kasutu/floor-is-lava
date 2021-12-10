@@ -35,6 +35,10 @@ function pageLoad() {
 //
 //
 //
+<<<<<<< Updated upstream
+=======
+//
+>>>>>>> Stashed changes
 //Begin
 let canvas;
 let ctx;
@@ -47,11 +51,15 @@ function pageLoad() {
   canvas = document.querySelector('canvas');
   ctx = canvas.getContext('2d');
   currentTime = Date.now();
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
   // sets the canvas width and hight dynamically
   canvas.width = innerWidth;
   canvas.height = innerHeight;
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 
   // Start the first frame request
@@ -97,6 +105,8 @@ function draw() {
 }
 /*==========DELETE BEFORE PASSING END==========*/
 =======
+=======
+>>>>>>> Stashed changes
 }
 
 function gameLoop(currentTime) {
@@ -110,4 +120,7 @@ function gameLoop(currentTime) {
 
   requestAnimationFrame(gameLoop);
 }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
