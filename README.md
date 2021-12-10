@@ -24,6 +24,7 @@ final project for SE first sem
 - canvas smooth animation cheat sheet: https://spicyyoghurt.com/tutorials/html5-javascript-game-development/create-a-smooth-canvas-animation
 - Simple 2d game engine: https://developer.ibm.com/tutorials/wa-build2dphysicsengine/
 - Jump physics: https://2dengine.com/?p=platformers
+- Keypress: https://medium.com/analytics-vidhya/implementing-keyboard-controls-or-shortcuts-in-javascript-82e11fccbf0c
 
 # The Team
 ### Jerome Cabugwason
