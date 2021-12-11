@@ -29,6 +29,7 @@ final project for SE first sem
 - Jump physics: https://2dengine.com/?p=platformers
 - Keypress: https://medium.com/analytics-vidhya/implementing-keyboard-controls-or-shortcuts-in-javascript-82e11fccbf0c
 - obstacle collision ideas: https://stackoverflow.com/questions/34607871/how-to-create-obstacles-in-canvas
+- sprite editor: https://www.piskelapp.com/
 
 # The Team
 ### Jerome Cabugwason
@@ -39,7 +40,7 @@ final project for SE first sem
   - Idea
   - Story
   - Code
-### Roel adrian celebria
+### Roel Adrian Celebria
   - Graphics
   - Code
   - Story
