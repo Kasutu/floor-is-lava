@@ -28,6 +28,7 @@ final project for SE first sem
 - Simple 2d game engine: https://developer.ibm.com/tutorials/wa-build2dphysicsengine/
 - Jump physics: https://2dengine.com/?p=platformers
 - Keypress: https://medium.com/analytics-vidhya/implementing-keyboard-controls-or-shortcuts-in-javascript-82e11fccbf0c
+- obstacle collision ideas: https://stackoverflow.com/questions/34607871/how-to-create-obstacles-in-canvas
 
 # The Team
 ### Jerome Cabugwason
