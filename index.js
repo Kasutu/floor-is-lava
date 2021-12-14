@@ -13,15 +13,64 @@ let fps;
 let gameStart = true;
 
 // physics vars
-const friction = 8;
-const gravity = 8;
+const friction = 0.8;
+const gravity = 1.5;
 
-// keyboard direction
+// movement direction
 let direction = {
   up: false,
   down: false,
   left: false,
   right: false,
+  inputListener: function (event) {
+    let inputState = event.type === 'keydown' ? true : false;
+
+    switch (event.key) {
+      case 'ArrowUp': // up arrow key
+        direction.up = inputState;
+        break;
+      case 'ArrowLeft': // left arrow key
+        direction.left = inputState;
+        break;
+      case 'ArrowRight': // right arrow key
+        direction.right = inputState;
+        break;
+    }
+  },
+};
+
+// entity creation
+let player = {
+  x: width / 2 - 16,
+  y: height / 2 - 16,
+  width: 32,
+  height: 32,
+  speed: 30,
+  deltaX: 0,
+  deltaY: 0,
+  isJumping: false,
+  isOnFloor: false,
+
+  draw: function () {
+    // draw a stroke rectangle
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+  },
+};
+
+let platform = {
+  x: 0,
+  y: 350,
+  width: width,
+  height: 10,
+
+  draw: function () {
+    // draw a stroke rectangle
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+  },
 };
 
 // executes when page is loaded
@@ -71,161 +120,40 @@ function gameLoop(currentTime) {
   }
 }
 
-// class data
-class PlayerObj {
-  constructor(x, y, width, height, speed) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-
-    // attributes
-    this.speed = speed;
-    this.velocityX = 0;
-    this.velocityY = 0;
-    this.isJumping = true;
-    this.isOnFloor = false;
-  }
-
-  draw() {
-    //stroke rectangle
-    ctx.strokeStyle = 'red';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
-  }
-}
-
-class PlatformObj {
-  constructor(x, y, width, height) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-
-    // attributes
-    this.speed = 0;
-    this.velocityX = 0;
-    this.velocityY = 0;
-  }
-
-  draw() {
-    //stroke rectangle
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
-  }
-}
-
-// init for physics
-let player;
-let platform;
-let playerAttrib = {
-  x: canvas.width / 2,
-  y: canvas.height / 2,
-  width: 16,
-  height: 16,
-  movementSpeed: 5,
-};
-
-//detects keypress and moves the player
-// optimize these later for speed
-addEventListener('keydown', (e) => {
-  switch (e.key) {
-    case 'ArrowUp':
-      //up
-      direction.up = true;
-      console.log('arrow up');
-      break;
-    // case 'ArrowDown':
-    //   //down
-    //   direction.down = true;
-    //   break;
-    case 'ArrowLeft':
-      //left
-      direction.left = true;
-      break;
-    case 'ArrowRight':
-      //right
-      direction.right = true;
-      break;
-  }
-});
-
-addEventListener('keyup', (e) => {
-  switch (e.key) {
-    case 'ArrowUp':
-      //up
-      direction.up = false;
-      break;
-    // case 'ArrowDown':
-    //   //down
-    //   direction.down = false;
-    //   break;
-    case 'ArrowLeft':
-      //left
-      direction.left = false;
-      break;
-    case 'ArrowRight':
-      //right
-      direction.right = false;
-      break;
-  }
-});
-
-// physics calculation
 function update() {
-  //entity creation
-  player = new PlayerObj(
-    playerAttrib.x - playerAttrib.width / 2,
-    playerAttrib.y - playerAttrib.height / 2,
-    playerAttrib.width,
-    playerAttrib.height,
-    playerAttrib.movementSpeed
-  );
-  platform = new PlatformObj(0, height - 50, width, 50);
-
   // movement and position calculation
-  if (direction.up && !player.isJumping && player.isOnFloor) {
+  if (direction.up && !player.isJumping) {
+    player.deltaY = -player.speed * 2;
     player.isJumping = true;
-    player.isOnFloor = false;
-    player.velocityY = -player.speed * 2;
   }
 
-  if (direction.right && player.velocityX < player.speed) {
-    player.velocityX += 1;
-    player.isJumping = false;
+  if (direction.left) {
+    player.deltaX -= 1;
   }
 
-  if (direction.left && player.velocityX > -player.speed) {
-    player.velocityX -= 1;
-    player.isJumping = false;
+  if (direction.right) {
+    player.deltaX += 1;
   }
 
-  // computes the final velocity
-  player.velocityX *= friction;
-  player.velocityY += gravity;
-
-  // border and obstacles update
-
-  // collision checks
-  let grounded = floorCollision(player, platform);
-  player.isOnFloor = grounded;
-
-  if (grounded) {
-    player.isOnFloor = true;
-    player.isJumping = false;
-    player.velocityY *= -1;
-  }
-
-  if (player.isOnFloor) {
-    player.velocityY = 0;
-  }
+  // moves the player downward
+  player.deltaY += gravity * 2;
 
   // final position values
-  playerAttrib.x += player.velocityX;
-  playerAttrib.y += player.velocityY;
+  player.y += player.deltaY;
+  player.x += player.deltaX;
 
-  // console.log(playerAttrib.x, playerAttrib.y, floorCollision(player, platform));
+  // friction
+  player.deltaX *= friction;
+  player.deltaY *= friction;
+
+  // collision checks
+  if (
+    player.y + player.height >= platform.y
+    ) {
+    player.isJumping = false;
+    player.y = platform.y - player.height
+    player.deltaY = 0;
+  }
 }
 
 // implementation
@@ -245,10 +173,13 @@ function render() {
   ctx.fillStyle = 'black';
   ctx.fillText(`FPS: ${fps}`, 10, 20);
   ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 40);
-  ctx.fillText(`player: x: ${player.x} y: ${player.y}`, 10, 60);
-  ctx.fillText(`platform: x: ${platform.x} y: ${platform.y}`, 10, 80);
-  ctx.fillText(`player delta-V: ${player.velocityY}m/s`, 10, 100);
+  ctx.fillText(`player: x: ${player.x / 2} y: ${player.y / 2}`, 10, 60);
+  ctx.fillText(`platform: x: ${platform.x / 2} y: ${platform.y / 2}`, 10, 80);
+  ctx.fillText(`player delta-V: ${player.deltaY}m/s`, 10, 100);
 }
+
+addEventListener('keydown', direction.inputListener);
+addEventListener('keyup', direction.inputListener);
 
 // collision detection
 function floorCollision(obj1, obj2) {
@@ -267,8 +198,7 @@ function addLineTrack(target1, target2) {
   ctx.beginPath();
   ctx.moveTo(startX, startY); // start coord
   ctx.lineTo(endX, endY); // end coord
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 1;
   ctx.strokeStyle = 'blue';
-  ctx.lineCap = 'round';
   ctx.stroke();
 }
