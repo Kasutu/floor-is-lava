@@ -10,9 +10,10 @@ let currentTime = Date.now();
 let elapsedTime;
 let lastFrame = 0;
 let fps;
+let gameStart = true;
 
 // physics vars
-const friction = 0.8;
+const friction = 8;
 const gravity = 8;
 
 // keyboard direction
@@ -25,6 +26,18 @@ let direction = {
 
 // executes when page is loaded
 window.onload = pageLoad();
+
+// start or pause the game
+function playGame(val) {
+  if (val === 'play') {
+    gameStart = true;
+    pageLoad();
+  }
+
+  if (val === 'pause') {
+    gameStart = false;
+  }
+}
 
 function pageLoad() {
   canvas = document.querySelector('canvas');
@@ -53,7 +66,7 @@ function gameLoop(currentTime) {
   render();
   // console.log(`Elapsed: ${elapsedTime}`);
 
-  if (false) {
+  if (gameStart) {
     requestAnimationFrame(gameLoop);
   }
 }
@@ -109,57 +122,66 @@ let platform;
 let playerAttrib = {
   x: canvas.width / 2,
   y: canvas.height / 2,
+  width: 16,
+  height: 16,
+  movementSpeed: 5,
 };
+
+//detects keypress and moves the player
+// optimize these later for speed
+addEventListener('keydown', (e) => {
+  switch (e.key) {
+    case 'ArrowUp':
+      //up
+      direction.up = true;
+      console.log('arrow up');
+      break;
+    // case 'ArrowDown':
+    //   //down
+    //   direction.down = true;
+    //   break;
+    case 'ArrowLeft':
+      //left
+      direction.left = true;
+      break;
+    case 'ArrowRight':
+      //right
+      direction.right = true;
+      break;
+  }
+});
+
+addEventListener('keyup', (e) => {
+  switch (e.key) {
+    case 'ArrowUp':
+      //up
+      direction.up = false;
+      break;
+    // case 'ArrowDown':
+    //   //down
+    //   direction.down = false;
+    //   break;
+    case 'ArrowLeft':
+      //left
+      direction.left = false;
+      break;
+    case 'ArrowRight':
+      //right
+      direction.right = false;
+      break;
+  }
+});
 
 // physics calculation
 function update() {
-  //detects keypress and moves the player
-  // optimize these later for speed
-  addEventListener('keydown', (e) => {
-    switch (e.key) {
-      case 'ArrowUp':
-        //up
-        direction.up = true;
-        console.log('arrow up');
-        break;
-      // case 'ArrowDown':
-      //   //down
-      //   direction.down = true;
-      //   break;
-      case 'ArrowLeft':
-        //left
-        direction.left = true;
-        break;
-      case 'ArrowRight':
-        //right
-        direction.right = true;
-        break;
-    }
-  });
-
-  addEventListener('keyup', (e) => {
-    switch (e.key) {
-      case 'ArrowUp':
-        //up
-        direction.up = false;
-        break;
-      // case 'ArrowDown':
-      //   //down
-      //   direction.down = false;
-      //   break;
-      case 'ArrowLeft':
-        //left
-        direction.left = false;
-        break;
-      case 'ArrowRight':
-        //right
-        direction.right = false;
-        break;
-    }
-  });
-
   //entity creation
-  player = new PlayerObj(playerAttrib.x - 16, playerAttrib.y - 16, 32, 32, 200);
+  player = new PlayerObj(
+    playerAttrib.x - playerAttrib.width / 2,
+    playerAttrib.y - playerAttrib.height / 2,
+    playerAttrib.width,
+    playerAttrib.height,
+    playerAttrib.movementSpeed
+  );
   platform = new PlatformObj(0, height - 50, width, 50);
 
   // movement and position calculation
@@ -171,10 +193,12 @@ function update() {
 
   if (direction.right && player.velocityX < player.speed) {
     player.velocityX += 1;
+    player.isJumping = false;
   }
 
   if (direction.left && player.velocityX > -player.speed) {
     player.velocityX -= 1;
+    player.isJumping = false;
   }
 
   // computes the final velocity
@@ -184,14 +208,14 @@ function update() {
   // border and obstacles update
 
   // collision checks
-  player.isOnFloor = false;
-  if (floorCollision(player, platform)) {
+  let grounded = floorCollision(player, platform);
+  player.isOnFloor = grounded;
+
+  if (grounded) {
     player.isOnFloor = true;
     player.isJumping = false;
+    player.velocityY *= -1;
   }
-  // } else if (player.isJumping && !floorCollision(player, canvas)) {
-  //   player.velocityY *= -1;
-  // }
 
   if (player.isOnFloor) {
     player.velocityY = 0;
@@ -217,12 +241,13 @@ function render() {
   addLineTrack(player, platform);
 
   // Draw number to the screen
-  ctx.font = '25px Arial';
+  ctx.font = '18px Arial';
   ctx.fillStyle = 'black';
-  ctx.fillText(`FPS: ${fps}`, 10, 30);
-  ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 60);
-  ctx.fillText(`player: X: ${player.x} y: ${player.y}`, 10, 90);
-  ctx.fillText(`platform: X: ${platform.x} y: ${platform.y}`, 10, 120);
+  ctx.fillText(`FPS: ${fps}`, 10, 20);
+  ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 40);
+  ctx.fillText(`player: x: ${player.x} y: ${player.y}`, 10, 60);
+  ctx.fillText(`platform: x: ${platform.x} y: ${platform.y}`, 10, 80);
+  ctx.fillText(`player delta-V: ${player.velocityY}m/s`, 10, 100);
 }
 
 // collision detection
