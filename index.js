@@ -18,8 +18,10 @@ let direction = {
   down: false,
   left: false,
   right: false,
+  engagedKey: '',
   inputListener: function (event) {
     let inputState = event.type === 'keydown' ? true : false;
+    this.engagedKey = event.type;
 
     switch (event.key) {
       case 'ArrowUp': // up arrow key
@@ -46,18 +48,26 @@ let player = {
   velY: 0,
   isJumping: false,
   isOnFloor: false,
+  isUnder: false,
+  isOutSide: false,
+  isInside: false,
 
   draw: function () {
     // draw a stroke rectangle
     ctx.strokeStyle = 'red';
     ctx.lineWidth = 2;
-    ctx.strokeRect(Math.floor(this.x), Math.floor(this.y), this.width, this.height);
+    ctx.strokeRect(
+      Math.floor(this.x),
+      Math.floor(this.y),
+      this.width,
+      this.height
+    );
   },
 };
 
 let platform = {
   x: Math.floor(width / 2 - 150 / 2),
-  y: Math.floor(height / 2),
+  y: Math.floor(height - 90),
   width: 150,
   height: 15,
 
@@ -65,7 +75,12 @@ let platform = {
     // draw a stroke rectangle
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 1;
-    ctx.strokeRect(Math.floor(this.x), Math.floor(this.y), this.width, this.height);
+    ctx.strokeRect(
+      Math.floor(this.x),
+      Math.floor(this.y),
+      this.width,
+      this.height
+    );
   },
 };
 
@@ -118,24 +133,24 @@ function gameLoop(currentTime) {
 
 function update() {
   // physics constants
-  const friction = 0.89;
-  const gravity = 0.95;
+  const friction = 0.85;
+  const gravity = 0.9;
   const jumpHeight = 3;
   const movementSpeed = 5;
 
   // movement and position calculation
   if (direction.up && !player.isJumping) {
-    player.velY = -movementSpeed * jumpHeight;
     player.isJumping = true;
-    // console.log('step 1:', -movementSpeed * jumpHeight);
+    player.velY = -movementSpeed * jumpHeight;
+    console.log('engagedKey', direction.engagedKey);
   }
 
   if (direction.left) {
-    player.velX -= 1.5;
+    player.velX -= 1;
   }
 
   if (direction.right) {
-    player.velX += 1.5;
+    player.velX += 1;
   }
 
   // friction
@@ -143,17 +158,81 @@ function update() {
   player.velY += gravity;
   // console.log('step 2:', player.velY)
 
-  // moves the player downward
+  // moves the player
   // final position values
   player.y += player.velY;
   player.x += player.velX;
   // console.log('step 3:', player.y)
 
-  // collision checks
-  if (floorCollision(player, platform)) {
+  // checks if player is under platform
+  if (
+    player.x > platform.x &&
+    player.x < platform.x + platform.width &&
+    player.y > platform.y
+  ) {
+    player.isUnder = true;
+  } else {
+    player.isUnder = false;
+  }
+
+  // cliff detection (outside) platform
+  if (
+    player.x + player.width < platform.x ||
+    player.x > platform.x + platform.width
+  ) {
+    player.isJumping = true;
+    player.isOutSide = true;
+    player.isOnFloor = false;
+  }
+
+  // cliff detection (inside) platform
+  if (
+    player.x > platform.x &&
+    player.x - player.width < platform.x + platform.width
+  ) {
+    player.isInside = true;
+    player.isOutSide = false;
+  }
+
+  // world bottom border collision
+  if (player.y + player.height > height && player.y > height - player.height) {
+    player.y = height - player.width;
+    player.velY = 0;
+    player.isOnFloor = true;
     player.isJumping = false;
+  }
+
+  // go through walls if player is under platform
+  if (
+    player.isUnder &&
+    player.isJumping &&
+    player.isInside &&
+    player.y + player.height > platform.y - platform.height / 2
+  ) {
+    player.isUnder = false;
+    player.isJumping = false;
+  }
+
+  // platform collision checks
+  if (
+    platformCollision(player, platform) &&
+    !player.isJumping &&
+    !player.isUnder
+  ) {
     player.y = platform.y - player.height;
     player.velY = 0;
+    player.isOnFloor = true;
+    player.isUnder = false;
+  }
+
+  // left side world collision
+  if (player.x <= width - width) {
+    player.x = 0;
+  }
+
+  // right side world collision
+  if (player.x + player.width > width) {
+    player.x = width - player.width;
   }
 }
 
@@ -172,32 +251,63 @@ function render() {
   addLineBoundaries(player);
 
   // Draw number to the screen
-  ctx.font = '18px Arial';
+  ctx.font = '18px monospace';
   ctx.fillStyle = 'black';
   ctx.fillText(`FPS: ${fps}`, 10, 20);
   ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 40);
+  ctx.fillText(`player delta-V: ${Math.floor(player.velY)}m/s`, 10, 60);
+
+  // floating data
+  ctx.font = '15px monospace';
+  ctx.fillStyle = 'red';
   ctx.fillText(
     `player: x: ${Math.floor(player.x)} y: ${Math.floor(player.y)}`,
-    player.x - player.width - 150,
+    player.x - player.width + 50,
     player.y - 30
   );
+  ctx.fillText(
+    `isJumping: ${player.isJumping}`,
+    player.x - player.width + 50,
+    player.y - 50
+  );
+  ctx.fillText(
+    `onFloor: ${player.isOnFloor}`,
+    player.x - player.width + 50,
+    player.y - 70
+  );
+  ctx.fillText(
+    `isOutSide: ${player.isOutSide}`,
+    player.x - player.width + 50,
+    player.y - 90
+  );
+  ctx.fillText(
+    `isUnder: ${player.isUnder}`,
+    player.x - player.width + 50,
+    player.y - 110
+  );
+  ctx.fillText(
+    `isInside: ${player.isInside}`,
+    player.x - player.width + 50,
+    player.y - 130
+  );
+
+  // platform floating data
   ctx.fillText(
     `platform: x: ${platform.x} y: ${platform.y}`,
     platform.x - platform.width - 30,
     platform.y - 20
   );
-  ctx.fillText(`player delta-V: ${Math.floor(player.velY)}m/s`, 10, 100);
-  ctx.fillText(`onFloor: ${floorCollision(player, platform)}`, 10, 120);
 
   // console.log(player.velY);
 }
 
+// keypress listener
 addEventListener('keydown', direction.inputListener);
 addEventListener('keyup', direction.inputListener);
 
 // collision detection
-function floorCollision(obj1, obj2) {
-  if (obj1.y + obj1.height >= obj2.y) {
+function platformCollision(obj1, obj2) {
+  if (obj1.y + obj1.height >= obj2.y && obj1.y <= obj2.y + obj2.height) {
     return true;
   } else {
     return false;
