@@ -2,8 +2,8 @@
 // canvas settings
 let canvas;
 let ctx;
-let width = 800;
-let height = 400;
+let width = 1000;
+let height = 500;
 
 // gameLoop vars
 let currentTime = Date.now();
@@ -11,10 +11,6 @@ let elapsedTime;
 let lastFrame = 0;
 let fps;
 let gameStart = true;
-
-// physics vars
-const friction = 0.8;
-const gravity = 1.5;
 
 // movement direction
 let direction = {
@@ -40,14 +36,14 @@ let direction = {
 };
 
 // entity creation
+let playerSize = 16;
 let player = {
-  x: width / 2 - 16,
-  y: height / 2 - 16,
-  width: 32,
-  height: 32,
-  speed: 30,
-  deltaX: 0,
-  deltaY: 0,
+  width: playerSize,
+  height: playerSize,
+  x: Math.floor(width / 2 - playerSize / 2),
+  y: Math.floor(height / 2 - playerSize / 2),
+  velX: 0,
+  velY: 0,
   isJumping: false,
   isOnFloor: false,
 
@@ -55,21 +51,21 @@ let player = {
     // draw a stroke rectangle
     ctx.strokeStyle = 'red';
     ctx.lineWidth = 2;
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
+    ctx.strokeRect(Math.floor(this.x), Math.floor(this.y), this.width, this.height);
   },
 };
 
 let platform = {
-  x: 0,
-  y: 350,
-  width: width,
-  height: 10,
+  x: Math.floor(width / 2 - 150 / 2),
+  y: Math.floor(height / 2),
+  width: 150,
+  height: 15,
 
   draw: function () {
     // draw a stroke rectangle
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 1;
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
+    ctx.strokeRect(Math.floor(this.x), Math.floor(this.y), this.width, this.height);
   },
 };
 
@@ -88,6 +84,7 @@ function playGame(val) {
   }
 }
 
+// loads the page
 function pageLoad() {
   canvas = document.querySelector('canvas');
   ctx = canvas.getContext('2d');
@@ -111,9 +108,8 @@ function gameLoop(currentTime) {
 
   // Pass the delta time to the update
   // Game logic here
-  update(delta === true);
+  update(delta);
   render();
-  // console.log(`Elapsed: ${elapsedTime}`);
 
   if (gameStart) {
     requestAnimationFrame(gameLoop);
@@ -121,38 +117,43 @@ function gameLoop(currentTime) {
 }
 
 function update() {
+  // physics constants
+  const friction = 0.89;
+  const gravity = 0.95;
+  const jumpHeight = 3;
+  const movementSpeed = 5;
+
   // movement and position calculation
   if (direction.up && !player.isJumping) {
-    player.deltaY = -player.speed * 2;
+    player.velY = -movementSpeed * jumpHeight;
     player.isJumping = true;
+    // console.log('step 1:', -movementSpeed * jumpHeight);
   }
 
   if (direction.left) {
-    player.deltaX -= 1;
+    player.velX -= 1.5;
   }
 
   if (direction.right) {
-    player.deltaX += 1;
+    player.velX += 1.5;
   }
 
-  // moves the player downward
-  player.deltaY += gravity * 2;
-
-  // final position values
-  player.y += player.deltaY;
-  player.x += player.deltaX;
-
   // friction
-  player.deltaX *= friction;
-  player.deltaY *= friction;
+  player.velX *= friction;
+  player.velY += gravity;
+  // console.log('step 2:', player.velY)
+
+  // moves the player downward
+  // final position values
+  player.y += player.velY;
+  player.x += player.velX;
+  // console.log('step 3:', player.y)
 
   // collision checks
-  if (
-    player.y + player.height >= platform.y
-    ) {
+  if (floorCollision(player, platform)) {
     player.isJumping = false;
-    player.y = platform.y - player.height
-    player.deltaY = 0;
+    player.y = platform.y - player.height;
+    player.velY = 0;
   }
 }
 
@@ -167,15 +168,28 @@ function render() {
 
   // debug render
   addLineTrack(player, platform);
+  addLineBoundaries(platform);
+  addLineBoundaries(player);
 
   // Draw number to the screen
   ctx.font = '18px Arial';
   ctx.fillStyle = 'black';
   ctx.fillText(`FPS: ${fps}`, 10, 20);
   ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 40);
-  ctx.fillText(`player: x: ${player.x / 2} y: ${player.y / 2}`, 10, 60);
-  ctx.fillText(`platform: x: ${platform.x / 2} y: ${platform.y / 2}`, 10, 80);
-  ctx.fillText(`player delta-V: ${player.deltaY}m/s`, 10, 100);
+  ctx.fillText(
+    `player: x: ${Math.floor(player.x)} y: ${Math.floor(player.y)}`,
+    player.x - player.width - 150,
+    player.y - 30
+  );
+  ctx.fillText(
+    `platform: x: ${platform.x} y: ${platform.y}`,
+    platform.x - platform.width - 30,
+    platform.y - 20
+  );
+  ctx.fillText(`player delta-V: ${Math.floor(player.velY)}m/s`, 10, 100);
+  ctx.fillText(`onFloor: ${floorCollision(player, platform)}`, 10, 120);
+
+  // console.log(player.velY);
 }
 
 addEventListener('keydown', direction.inputListener);
@@ -185,20 +199,81 @@ addEventListener('keyup', direction.inputListener);
 function floorCollision(obj1, obj2) {
   if (obj1.y + obj1.height >= obj2.y) {
     return true;
+  } else {
+    return false;
   }
 }
 
 // shows distance visually between 2 objects
 function addLineTrack(target1, target2) {
-  let startX = target1.x + target1.width / 2;
-  let startY = target1.y + target1.height / 2;
-  let endX = target2.x + target2.width / 2;
-  let endY = target2.y + target2.height / 2;
+  let startXLeft = target1.x + target1.width / 2;
+  let startYLeft = target1.y + target1.height / 2;
+  let endXLeft = target2.x + target2.width / 2;
+  let endYLeft = target2.y + target2.height / 2;
 
   ctx.beginPath();
-  ctx.moveTo(startX, startY); // start coord
-  ctx.lineTo(endX, endY); // end coord
+  ctx.moveTo(startXLeft, startYLeft); // start coord
+  ctx.lineTo(endXLeft, endYLeft); // end coord
   ctx.lineWidth = 1;
   ctx.strokeStyle = 'blue';
+  ctx.stroke();
+}
+
+// shows boundary visually between 2 objects
+function addLineBoundaries(target) {
+  // left side
+  let startXLeft = Math.floor(target.x);
+  let startYLeft = 0;
+  let endXLeft = Math.floor(target.x);
+  let endYLeft = Math.floor(height);
+
+  // right side
+  let startXRight = Math.floor(target.x + target.width);
+  let startYRight = 0;
+  let endXRight = Math.floor(target.x + target.width);
+  let endYRight = Math.floor(height);
+
+  // top side
+  let startXTop = 0;
+  let startYTop = Math.floor(target.y);
+  let endXTop = Math.floor(width);
+  let endYTop = Math.floor(target.y);
+
+  // bottom side
+  let startXBottom = 0;
+  let startYBottom = Math.floor(target.y + target.height);
+  let endXBottom = width;
+  let endYBottom = Math.floor(target.y + target.height);
+
+  // left side
+  ctx.beginPath();
+  ctx.moveTo(startXLeft, startYLeft); // start coord
+  ctx.lineTo(endXLeft, endYLeft); // end coord
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'grey';
+  ctx.stroke();
+
+  // right side
+  ctx.beginPath();
+  ctx.moveTo(startXRight, startYRight); // start coord
+  ctx.lineTo(endXRight, endYRight); // end coord
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'grey';
+  ctx.stroke();
+
+  // top side
+  ctx.beginPath();
+  ctx.moveTo(startXTop, startYTop); // start coord
+  ctx.lineTo(endXTop, endYTop); // end coord
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'grey';
+  ctx.stroke();
+
+  // bottom side
+  ctx.beginPath();
+  ctx.moveTo(startXBottom, startYBottom); // start coord
+  ctx.lineTo(endXBottom, endYBottom); // end coord
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'grey';
   ctx.stroke();
 }
