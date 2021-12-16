@@ -4,6 +4,7 @@ let canvas;
 let ctx;
 let width = 1000;
 let height = 500;
+ 
 
 // gameLoop vars
 let currentTime = Date.now();
@@ -36,37 +37,83 @@ let direction = {
 };
 
 // entity creation
-let playerSize = 16;
+const playerLeft = new Image();
+playerLeft.src = 'Character_ghos_left.png'
+const playerRight = new Image();
+playerRight.src = 'Character_ghost_Right.png'
+
 let player = {
-  width: playerSize,
-  height: playerSize,
-  x: width / 2 - playerSize / 2,
-  y: height / 2 - playerSize / 2,
+  width: 30,
+  height: 30,
+  x: width / 2 - 16 / 2,
+  y: height / 2 - 16 / 2,
+  playerFrameX: 0,
+  playerFrameY: 0,
   velX: 0,
   velY: 0,
+  spriteWidth: 500,
+  spriteHeight: 500,
   isJumping: false,
   isOnFloor: false,
+  
 
   draw: function () {
-    // draw a stroke rectangle
-    ctx.strokeStyle = 'red';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(Math.floor(this.x), Math.floor(this.y), this.width, this.height);
+    if (this.playerFrameY < 6) {
+      this.playerFrameY ++
+    } else {
+      this.playerFrameY = 1
+    }
+    if(this.velX >= 0){
+    ctx.drawImage(playerRight, this.spriteWidth * this.playerFrameX, this.spriteHeight * this.playerFrameY, this.spriteWidth, this.spriteHeight, Math.floor(this.x), Math.floor(this.y), this.width, this.height)
+    } else {
+      ctx.drawImage(playerLeft,this.spriteWidth * this.playerFrameX, this.spriteHeight * this.playerFrameY, this.spriteWidth, this.spriteHeight,  Math.floor(this.x), Math.floor(this.y), this.width, this.height)
+    }
   },
 };
 
+//platform
+const dirt_one = new Image()
+dirt_one.src = 'Dirt_1.png'
 let platform = {
+  width: 150,
+  height: 75,
   x: width / 2 - 150 / 2,
   y: height / 2,
-  width: 150,
-  height: 15,
+  spriteWidth: 1000,
+  spriteHeight: 1000,
+  platformFrameX: 0,
+  platformFrameY: 0.34,
 
   draw: function () {
-    // draw a stroke rectangle
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(Math.floor(this.x), Math.floor(this.y), this.width, this.height);
+    ctx.drawImage(dirt_one, this.spriteWidth * this.platformFrameX, this.spriteHeight * this.platformFrameY, this.spriteWidth, this.spriteHeight,Math.floor(this.x), Math.floor(this.y),this.width, this.height )
   },
+};
+
+//lava
+const lavaImage = new Image()
+lavaImage.src = 'LavaSpriteSheet.png'
+let lavagame = {
+  width: 500,
+  height: 500,
+  x: 1000,
+  y: 50,
+  spriteWidth: 640,
+  spriteHeight: 480,
+  LavaPlatformFrameX: 0,
+  LavaPlatformFrameY: 0.,
+
+  draw: function () {
+     if (this.LavaPlatformFrameY < 6) {
+      this.LavaPlatformFrameY ++
+    } else {
+      this.LavaPlatformFrameY = 1
+    }
+
+     
+    ctx.drawImage(lavaImage, this.spriteWidth * this.LavaPlatformFrameX, this.spriteHeight * this.LavaPlatformFrameY, this.spriteWidth, this.spriteHeight,Math.floor(this.x), Math.floor(this.y),this.width, this.height )
+  },
+
+
 };
 
 // executes when page is loaded
@@ -167,6 +214,7 @@ function render() {
   //render
   player.draw();
   platform.draw();
+  lavagame.draw();
 
   // debug render
   addLineTrack(player, platform);
