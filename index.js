@@ -116,6 +116,7 @@ function pageLoad() {
   requestAnimationFrame(gameLoop);
 }
 
+// the game loop
 function gameLoop(currentTime) {
   // Calculate how much time has passed
   delta = (currentTime - lastFrame) / 1000;
@@ -135,44 +136,45 @@ function gameLoop(currentTime) {
   }
 }
 
+// calculations and update
 function update() {
   // physics constants
-  const friction = 0.85;
+  // only affects player
+  const friction = 0.9;
   const gravity = 0.7;
-  const jumpHeight = 3;
+  const jumpHeight = 2.8;
   const movementSpeed = 5;
 
   // movement and position behavior calculation
-  if (joystick.up && !player.isJumping) {
+  if (joystick.up && !player.isJumping && player.isOnFloor) {
     player.isJumping = true;
     player.velY = -movementSpeed * jumpHeight;
     joystick.up = false;
   }
 
+  if (player.isJumping) {
+    player.isOnFloor = false;
+    player.isAirborne = true;
+  }
+
   if (joystick.left) {
     player.velX -= 1.5;
-
-    // left side world collision
-    if (player.x <= width - width) {
-      player.velX = 0;
-    }
   }
 
   if (joystick.right) {
     player.velX += 1.5;
-
-    // right side world collision
-    if (player.x + player.width >= width) {
-      player.velX = 0;
-    }
   }
 
-  // friction
-  if (!player.isJumping) {
-    player.velX *= friction;
+  // conditional friction to change
+  // movement speed while jumping
+  if (player.isJumping || player.isAirborne) {
+    player.velX *= 0.89;
   } else {
-    player.velX *= 0.85;
+    player.velX *= friction;
+    player.isAirborne = false;
   }
+
+  // down force on player
   player.velY += gravity;
 
   // moves the player
@@ -194,6 +196,17 @@ function update() {
     player.velY = 0;
     player.isOnFloor = true;
     player.isJumping = false;
+    player.isAirborne = false;
+  }
+
+  // left side world collision
+  if (player.x <= width - width) {
+    player.x = 0;
+  }
+
+  // right side world collision
+  if (player.x + player.width >= width) {
+    player.x = width - player.width;
   }
 
   // checks if player is under platform
@@ -213,9 +226,7 @@ function update() {
     (player.x >= platform.x + platform.width && !player.isUnder)
   ) {
     player.isOnPlatform = false;
-    player.isAirborne = true;
     player.isOutSide = true;
-    player.isOnFloor = false;
   } else if (!player.isUnder) {
     // cliff detection (inside) platform
     player.isOnPlatform = true;
@@ -223,6 +234,10 @@ function update() {
     player.isOutSide = false;
   } else if (player.isUnder) {
     player.isOutSide = false;
+  } else if (!player.isOutSide && !player.isUnder) {
+    player.isAirborne = true;
+  } else if (player.isOutSide && !player.isUnder && !player.isAirborne) {
+    player.isOnFloor = true;
   }
 
   // platform detection
@@ -232,6 +247,7 @@ function update() {
       player.oldY + player.height <= platform.oldY
     ) {
       player.isJumping = false;
+      player.isAirborne = false;
       // coordinates that make the player stand on platform
       player.y = platform.y - player.height;
       player.velY = 0;
@@ -296,6 +312,11 @@ function render() {
     `isOnPlatform: ${player.isOnPlatform}`,
     player.x - player.width + 50,
     player.y - 130
+  );
+  ctx.fillText(
+    `isAirborne: ${player.isAirborne}`,
+    player.x - player.width + 50,
+    player.y - 150
   );
 
   // platform floating data
