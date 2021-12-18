@@ -302,6 +302,7 @@ function update() {
   // player, platform, friction = 0.9, gravity = 0.7, jumpHeight = 2.8, movementSpeed = 5;
   applyPhysicsTo(player);
 
+  // checks collisions for all platforms or for single objects
   for (let i = 0; i < platformArr.length; i++) {
     collisionEngine(player, platformArr[i]);
   }
