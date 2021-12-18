@@ -12,6 +12,27 @@ let lastFrame = 0;
 let fps;
 let gameStart = true;
 
+// physics constants
+// only affects player
+// default settings
+const friction = 0.85;
+const airborneFriction = 0.9;
+const gravity = 0.7;
+const jumpHeight = 2.8;
+const movementSpeed = 5;
+
+// entity creation
+let playerSize = 32 * 2;
+
+// platform array
+const platformArr = [];
+
+// images
+const playerLeft = new Image();
+const playerRight = new Image();
+playerLeft.src = './spriteSheet/Character_ghos_left.png';
+playerRight.src = './spriteSheet/Character_ghost_Right.png';
+
 // movement joystick
 let joystick = {
   up: false,
@@ -35,15 +56,6 @@ let joystick = {
     }
   },
 };
-
-// entity creation
-let playerSize = 32 * 2;
-
-// images
-const playerLeft = new Image();
-const playerRight = new Image();
-playerLeft.src = './spriteSheet/Character_ghos_left.png';
-playerRight.src = './spriteSheet/Character_ghost_Right.png';
 
 // properties
 let player = {
@@ -123,27 +135,117 @@ let player = {
   },
 };
 
-let platform = {
-  y: Math.trunc(width / 2 - 150 / 2),
-  x: Math.trunc(height - 90),
-  velY: 0,
-  oldX: 0,
-  oldY: 0,
-  width: 150,
-  height: 15,
+// let platform = {
+//   x: Math.trunc(width / 2 - 150 / 2),
+//   y: Math.trunc(height - 90),
+//   velY: 0,
+//   oldX: 0,
+//   oldY: 0,
+//   width: 150,
+//   height: 15,
 
-  draw: function () {
-    // draw a stroke rectangle
-    ctx.strokeStyle = 'white';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(
-      Math.trunc(this.x),
-      Math.trunc(this.y),
-      this.width,
-      this.height
-    );
+//   draw: function () {
+//     // draw a stroke rectangle
+//     ctx.strokeStyle = 'white';
+//     ctx.lineWidth = 1;
+//     ctx.strokeRect(
+//       Math.trunc(this.x),
+//       Math.trunc(this.y),
+//       this.width,
+//       this.height
+//     );
+//   },
+// };
+
+// defines what platform to add in the map
+// push the random x values into the array
+// para pure random 😄
+platformArr.push(
+  {
+    x: Math.trunc(100),
+    y: Math.trunc(height - 150),
+    velY: 0,
+    oldX: 0,
+    oldY: 0,
+    width: 150,
+    height: 15,
+
+    draw: function () {
+      // draw a stroke rectangle
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(
+        Math.trunc(this.x),
+        Math.trunc(this.y),
+        this.width,
+        this.height
+      );
+    },
   },
-};
+  {
+    x: Math.trunc(width - 250),
+    y: Math.trunc(height - 300),
+    velY: 0,
+    oldX: 0,
+    oldY: 0,
+    width: 150,
+    height: 15,
+
+    draw: function () {
+      // draw a stroke rectangle
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(
+        Math.trunc(this.x),
+        Math.trunc(this.y),
+        this.width,
+        this.height
+      );
+    },
+  },
+  {
+    x: Math.trunc(width / 2 - 150 / 2),
+    y: Math.trunc(height - 90),
+    velY: 0,
+    oldX: 0,
+    oldY: 0,
+    width: 150,
+    height: 15,
+
+    draw: function () {
+      // draw a stroke rectangle
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(
+        Math.trunc(this.x),
+        Math.trunc(this.y),
+        this.width,
+        this.height
+      );
+    },
+  },
+  {
+    x: Math.trunc(width / 2 - 150 / 2),
+    y: Math.trunc(height - 230),
+    velY: 0,
+    oldX: 0,
+    oldY: 0,
+    width: 150,
+    height: 15,
+
+    draw: function () {
+      // draw a stroke rectangle
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(
+        Math.trunc(this.x),
+        Math.trunc(this.y),
+        this.width,
+        this.height
+      );
+    },
+  }
+);
 
 // executes when page is loaded
 window.onload = pageLoad();
@@ -198,7 +300,11 @@ function gameLoop(currentTime) {
 function update() {
   // default settings
   // player, platform, friction = 0.9, gravity = 0.7, jumpHeight = 2.8, movementSpeed = 5;
-  engine(player, platform, 0.85, 0.7, 2.8, 5);
+  applyPhysicsTo(player);
+
+  for (let i = 0; i < platformArr.length; i++) {
+    collisionEngine(player, platformArr[i]);
+  }
 }
 
 // implementation
@@ -212,7 +318,8 @@ function render() {
   player.animate();
 
   // platform
-  platform.draw();
+  // platform.draw();
+  addPlatforms();
 
   // debug render trackers
   // addLineTrack(player, platform);
@@ -229,29 +336,23 @@ function render() {
   // console.log(player.velY);
 }
 
+/* =========== FUNCTIONS SECTION ============ */
+
 // keypress listener
 addEventListener('keydown', joystick.inputListener);
 addEventListener('keyup', joystick.inputListener);
 
-/* =========== ENGINE ============ */
+// adds all the platforms to the map
+function addPlatforms() {
+  for (let i = 0; i < platformArr.length; i++) {
+    platformArr[i].draw();
+  }
+}
 
-function engine(
-  player,
-  platform,
-  friction,
-  gravity,
-  jumpHeight,
-  movementSpeed
-) {
-  // physics constants
-  // only affects player
+/* =========== customEngine ============ */
+// jerome Cabugwason 12/18/21
 
-  // default settings
-  // friction = 0.9;
-  // gravity = 0.7;
-  // jumpHeight = 2.8;
-  // movementSpeed = 5;
-
+function applyPhysicsTo(player) {
   // movement and position behavior calculation
   if (joystick.up && !player.isJumping && player.isOnFloor) {
     player.isJumping = true;
@@ -275,7 +376,7 @@ function engine(
   // conditional friction to change
   // movement speed while jumping
   if (player.isJumping || player.isAirborne) {
-    player.velX *= 0.9;
+    player.velX *= airborneFriction;
   } else {
     player.velX *= friction;
     player.isAirborne = false;
@@ -290,7 +391,9 @@ function engine(
   player.oldY = player.y;
   player.y += player.velY;
   player.x += player.velX;
+}
 
+function collisionEngine(player, platform) {
   // platform
   platform.oldY = platform.y;
 
@@ -366,7 +469,11 @@ function engine(
   }
 }
 
-/* =========== ENGINE END ============ */
+/* =========== customEngine END ============ */
+
+
+/*=========== trackers and visual debug aids ===========*/
+// jerome Cabugwason 12/18/21
 
 // on screen data anchored to player
 function addTrackingData() {
@@ -414,8 +521,8 @@ function addTrackingData() {
   // platform floating data
   ctx.fillText(
     `platform: x: ${platform.x} y: ${platform.y}`,
-    platform1.x - platform1.width - 30,
-    platform1.y - 20
+    platform.x - platform.width - 30,
+    platform.y - 20
   );
 }
 
@@ -492,3 +599,5 @@ function addLineBoundaries(target) {
   ctx.strokeStyle = 'grey';
   ctx.stroke();
 }
+
+/*=========== trackers and visual debug aids end===========*/
