@@ -2,8 +2,8 @@
 // canvas settings
 let canvas;
 let ctx;
-let width = 720;
-let height = 400;
+let width = 1000;
+let height = 500;
 
 // gameLoop vars
 let currentTime = Date.now();
@@ -37,7 +37,7 @@ let joystick = {
 };
 
 // entity creation
-let playerSize = 32;
+let playerSize = 32 * 2;
 
 // images
 const playerLeft = new Image();
@@ -67,6 +67,7 @@ let player = {
   playerFrameY: 0,
   spriteWidth: 500,
   spriteHeight: 500,
+  counter: 0,
 
   // draw a stroke rectangle
   draw: function () {
@@ -80,13 +81,20 @@ let player = {
     );
   },
 
-  drawCharacter: function () {
+  animate: function () {
     // draw the character
-    if (this.playerFrameY < 6) {
-      this.playerFrameY++;
-    } else {
-      this.playerFrameY = 1;
+    this.counter++;
+
+    if (this.counter > 15) {
+      if (this.playerFrameY < 5) {
+        this.playerFrameY++;
+      } else {
+        this.playerFrameY = 0;
+      }
+
+      this.counter = 0;
     }
+
     if (this.velX >= 0) {
       ctx.drawImage(
         playerRight,
@@ -116,8 +124,9 @@ let player = {
 };
 
 let platform = {
-  x: Math.trunc(width / 2 - 150 / 2),
-  y: Math.trunc(height - 90),
+  y: Math.trunc(width / 2 - 150 / 2),
+  x: Math.trunc(height - 90),
+  velY: 0,
   oldX: 0,
   oldY: 0,
   width: 150,
@@ -125,7 +134,7 @@ let platform = {
 
   draw: function () {
     // draw a stroke rectangle
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = 'white';
     ctx.lineWidth = 1;
     ctx.strokeRect(
       Math.trunc(this.x),
@@ -159,6 +168,7 @@ function pageLoad() {
   // sets the canvas width and hight dynamically
   canvas.width = width;
   canvas.height = height;
+  canvas.style.background = 'purple';
 
   // first animation request
   requestAnimationFrame(gameLoop);
@@ -186,12 +196,61 @@ function gameLoop(currentTime) {
 
 // calculations and update
 function update() {
+  // default settings
+  // player, platform, friction = 0.9, gravity = 0.7, jumpHeight = 2.8, movementSpeed = 5;
+  engine(player, platform, 0.85, 0.7, 2.8, 5);
+}
+
+// implementation
+function render() {
+  // Clear the entire canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // ===== render ===== //
+  // player
+  // player.draw();
+  player.animate();
+
+  // platform
+  platform.draw();
+
+  // debug render trackers
+  // addLineTrack(player, platform);
+  // addLineBoundaries(platform);
+  // addLineBoundaries(player);
+  // addTrackingData();
+
+  // Draw number to the screen
+  ctx.font = '18px monospace';
+  ctx.fillStyle = 'black';
+  ctx.fillText(`FPS: ${fps}`, 10, 20);
+  ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 40);
+  ctx.fillText(`player delta-V: ${Math.trunc(player.velY)}m/s`, 10, 60);
+  // console.log(player.velY);
+}
+
+// keypress listener
+addEventListener('keydown', joystick.inputListener);
+addEventListener('keyup', joystick.inputListener);
+
+/* =========== ENGINE ============ */
+
+function engine(
+  player,
+  platform,
+  friction,
+  gravity,
+  jumpHeight,
+  movementSpeed
+) {
   // physics constants
   // only affects player
-  const friction = 0.9;
-  const gravity = 0.7;
-  const jumpHeight = 2.8;
-  const movementSpeed = 5;
+
+  // default settings
+  // friction = 0.9;
+  // gravity = 0.7;
+  // jumpHeight = 2.8;
+  // movementSpeed = 5;
 
   // movement and position behavior calculation
   if (joystick.up && !player.isJumping && player.isOnFloor) {
@@ -216,7 +275,7 @@ function update() {
   // conditional friction to change
   // movement speed while jumping
   if (player.isJumping || player.isAirborne) {
-    player.velX *= 0.89;
+    player.velX *= 0.9;
   } else {
     player.velX *= friction;
     player.isAirborne = false;
@@ -307,46 +366,7 @@ function update() {
   }
 }
 
-// implementation
-function render() {
-  // Clear the entire canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // ===== render ===== //
-  // player
-  player.draw();
-  player.drawCharacter();
-
-  // platform
-  platform.draw();
-
-  // debug render trackers
-  // addLineTrack(player, platform);
-  // addLineBoundaries(platform);
-  // addLineBoundaries(player);
-  addTrackingData();
-
-  // Draw number to the screen
-  ctx.font = '18px monospace';
-  ctx.fillStyle = 'black';
-  ctx.fillText(`FPS: ${fps}`, 10, 20);
-  ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 40);
-  ctx.fillText(`player delta-V: ${Math.trunc(player.velY)}m/s`, 10, 60);
-  // console.log(player.velY);
-}
-
-// keypress listener
-addEventListener('keydown', joystick.inputListener);
-addEventListener('keyup', joystick.inputListener);
-
-// collision detection box y-axis
-function platformCollision(obj1, obj2) {
-  if (obj1.y + obj1.height >= obj2.y && obj1.y <= obj2.y + obj2.height) {
-    return true;
-  } else {
-    return false;
-  }
-}
+/* =========== ENGINE END ============ */
 
 // on screen data anchored to player
 function addTrackingData() {
@@ -394,8 +414,8 @@ function addTrackingData() {
   // platform floating data
   ctx.fillText(
     `platform: x: ${platform.x} y: ${platform.y}`,
-    platform.x - platform.width - 30,
-    platform.y - 20
+    platform1.x - platform1.width - 30,
+    platform1.y - 20
   );
 }
 
