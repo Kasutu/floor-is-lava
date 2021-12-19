@@ -30,18 +30,18 @@ const platformArr = [];
 // images
 const playerLeft = new Image();
 const playerRight = new Image();
-const Lava = new Image ();
 const dirtOne = new Image ();
 const dirtTwo = new Image ();
 const dirtThree = new Image ();
 const dirtFour = new Image ();
+const Lava = new Image ();
 playerLeft.src = './spriteSheet/Character_ghos_left.png';
 playerRight.src = './spriteSheet/Character_ghost_Right.png';
-Lava.src = './spriteSheet/LavaSpriteSheet.png';
 dirtOne.src = './spriteSheet/Dirt_Lava_1.png';
 dirtTwo.src = './spriteSheet/Dirt_Lava_2.png';
 dirtThree.src = './spriteSheet/Dirt_Lava_3.png';
 dirtFour.src = './spriteSheet/Dirt_Lava_4.png';
+Lava.src = './spriteSheet/LavaSpriteSheet.png';
 
 // movement joystick
 let joystick = {
