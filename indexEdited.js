@@ -41,7 +41,7 @@ dirtOne.src = './spriteSheet/Dirt_Lava_1.png';
 dirtTwo.src = './spriteSheet/Dirt_Lava_2.png';
 dirtThree.src = './spriteSheet/Dirt_Lava_3.png';
 dirtFour.src = './spriteSheet/Dirt_Lava_4.png';
-Lava.src = './spriteSheet/Lava Sprite Sheet.png';
+Lava.src = './spriteSheet/Lava Sprite sheet.png';
 
 // movement joystick
 let joystick = {
