@@ -11,6 +11,9 @@ let elapsedTime;
 let lastFrame = 0;
 let fps;
 let gameStart = true;
+let spawnTimer=0;
+
+
 
 // physics constants
 // only affects player
@@ -24,24 +27,15 @@ const movementSpeed = 5;
 // entity creation
 let playerSize = 32 * 2;
 
-// platform array
-const platformArr = [];
-
 // images
 const playerLeft = new Image();
 const playerRight = new Image();
-const dirtOne = new Image ();
-const dirtTwo = new Image ();
-const dirtThree = new Image ();
-const dirtFour = new Image ();
 const Lava = new Image ();
+const dirtTwo = new Image ();
 playerLeft.src = './spriteSheet/Character_ghos_left.png';
 playerRight.src = './spriteSheet/Character_ghost_Right.png';
-dirtOne.src = './spriteSheet/Dirt_Lava_1.png';
+Lava.src = './spriteSheet/LavaSpriteSheet.png';
 dirtTwo.src = './spriteSheet/Dirt_Lava_2.png';
-dirtThree.src = './spriteSheet/Dirt_Lava_3.png';
-dirtFour.src = './spriteSheet/Dirt_Lava_4.png';
-Lava.src = './spriteSheet/Lava Sprite sheet.png';
 
 // movement joystick
 let joystick = {
@@ -91,18 +85,6 @@ let player = {
   spriteHeight: 500,
   counter: 0,
 
-  // draw a stroke rectangle
-  draw: function () {
-    ctx.strokeStyle = 'red';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(
-      Math.trunc(this.x),
-      Math.trunc(this.y),
-      this.width,
-      this.height
-    );
-  },
-
   animate: function () {
     // draw the character
     this.counter++;
@@ -117,7 +99,7 @@ let player = {
       this.counter = 0;
     }
 
-    if (this.velX >= 0) {
+    if (this.velX > 0) {
       ctx.drawImage(
         playerRight,
         this.spriteWidth * this.playerFrameX,
@@ -170,7 +152,8 @@ let player = {
 // defines what platform to add in the map
 // push the random x values into the array
 // para pure random 😄
-platformArr.push(
+// platform array
+const platformArr = [
   {
     x: Math.trunc(100),
     y: Math.trunc(height - 150),
@@ -179,18 +162,19 @@ platformArr.push(
     oldY: 0,
     width: 200,
     height: 200,
+    speed: 1,
     //Platform sheet variables
     PlatformFrameX: 0,
     PlatformFrameY: 0.29,
-    spriteWidth: 900,
+    spriteWidth: 1000,
     spriteHeight: 1000,
     counter: 0,
+    update(){
+      this.y += this.speed
+    },
 
     draw: function () {
-      // draw a stroke rectangle
-      
-
-        ctx.drawImage(dirtOne,
+        ctx.drawImage(dirtTwo,
           this.spriteWidth * this.PlatformFrameX,
           this.spriteHeight * this.PlatformFrameY,
           this.spriteWidth,
@@ -199,7 +183,6 @@ platformArr.push(
           Math.trunc(this.y),
           this.width,
           this.height,);
-      
     },
   },
   {
@@ -210,16 +193,17 @@ platformArr.push(
     oldY: 0,
     width: 200,
     height: 200,
-
+    speed: 1,
     PlatformFrameX: 0,
     PlatformFrameY: 0.29,
-    spriteWidth: 900,
+    spriteWidth: 1000,
     spriteHeight: 1000,
     counter: 0,
+    update(){
+      this.y += this.speed
+    },
 
     draw: function () {
-      // draw a stroke rectangle
-      
       ctx.drawImage(dirtTwo,
         this.spriteWidth * this.PlatformFrameX,
         this.spriteHeight * this.PlatformFrameY,
@@ -241,18 +225,18 @@ platformArr.push(
     oldY: 0,
     width: 200,
     height: 200,
-
+    speed: 1,
     PlatformFrameX: 0,
     PlatformFrameY: 0.29,
     spriteWidth: 1000,
     spriteHeight: 1000,
     counter: 0,
+    update(){
+      this.y += this.speed
+    },
 
     draw: function () {
-      // draw a stroke rectangle
-      
-
-      ctx.drawImage(dirtThree,
+      ctx.drawImage(dirtTwo,
         this.spriteWidth * this.PlatformFrameX,
         this.spriteHeight * this.PlatformFrameY,
         this.spriteWidth,
@@ -265,23 +249,24 @@ platformArr.push(
   },
   {
     x: Math.trunc(width / 2 - 150 / 2),
-    y: Math.trunc(height - 230),
+    y: Math.trunc(height - 250),
     velY: 0,
     oldX: 0,
     oldY: 0,
     width: 200,
     height: 200,
-
+    speed: 1,
     PlatformFrameX: 0,
     PlatformFrameY: 0.29,
     spriteWidth: 1000,
     spriteHeight: 1000,
     counter: 0,
+    update(){
+      this.y += this.speed
+    },
 
     draw: function () {
-      // draw a stroke rectangle
-      
-      ctx.drawImage(dirtFour,
+      ctx.drawImage(dirtTwo,
         this.spriteWidth * this.PlatformFrameX,
         this.spriteHeight * this.PlatformFrameY,
         this.spriteWidth,
@@ -291,9 +276,77 @@ platformArr.push(
         this.width,
         this.height,);
     },
-  }
-);
+  },
+  {
+    x: Math.trunc(width / 2 - 150 / 2),
+    y: Math.trunc(height - 450),
+    velY: 0,
+    oldX: 0,
+    oldY: 0,
+    width: 200,
+    height: 200,
+    speed: 1,
 
+    PlatformFrameX: 0,
+    PlatformFrameY: 0.29,
+    spriteWidth: 1000,
+    spriteHeight: 1000,
+    counter: 0,
+    update(){
+      this.y += this.speed
+    },
+
+    draw: function (){
+
+    ctx.drawImage(dirtTwo,
+      this.spriteWidth * this.PlatformFrameX,
+      this.spriteHeight * this.PlatformFrameY,
+      this.spriteWidth,
+      this.spriteHeight,
+      Math.trunc(this.x),
+      Math.trunc(this.y),
+      this.width,
+      this.height,);
+    },
+  },
+
+]
+//new platforms that's going to be spawned above the canvas
+class newPlatform {
+  constructor(){
+    //this will make the platform spawn random in X-axis
+    this.x = (Math.random()*(width-300)) + 15
+    //this will make the spawn platform spawn only at the top of canvas
+    this.y = 1;
+    this.radius =50;
+    this.speed = 1;
+    this.distance;
+    this.PlatformFrameX = 0,
+    this.PlatformFrameY = 0.29,
+    this.spriteWidth = 1000,
+    this.spriteHeight = 1000,
+    this.counter = 0,
+    this.width = 200,
+    this.height = 200
+  }
+  update(){
+    this.y += this.speed
+  }
+  draw(){
+    
+      ctx.drawImage(dirtTwo,
+        this.spriteWidth * this.PlatformFrameX,
+        this.spriteHeight * this.PlatformFrameY,
+        this.spriteWidth,
+        this.spriteHeight,
+        Math.trunc(this.x),
+        Math.trunc(this.y),
+        this.width,
+        this.height,);
+    }
+}
+
+//Lava spritesheet
 let lava = {
   x: 1,
   y: 470,
@@ -401,7 +454,7 @@ function update() {
 function render() {
   // Clear the entire canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  
   // ===== render ===== //
   // player
   // player.draw();
@@ -413,7 +466,9 @@ function render() {
 
   //lava_platform
   // lava.draw()
-  lava.draw()
+  lava.draw();
+
+  gameOver();
 
   // debug render trackers
   // addLineTrack(player, platform);
@@ -438,10 +493,33 @@ addEventListener('keyup', joystick.inputListener);
 
 // adds all the platforms to the map
 function addPlatforms() {
+  //timer for the platform to be spawned
+  spawnTimer++
+  if (spawnTimer == 90){
+    spawnTimer = 0
+    platformArr.push(new newPlatform());
+  }  
   for (let i = 0; i < platformArr.length; i++) {
+    platformArr[i].update()
     platformArr[i].draw();
   }
+  
+  //delete platform outside the canvas
+  for(let i = 0; i <platformArr.length; i++){
+    if(platformArr[i].y > 470){
+      platformArr.splice(i,1);
+    }
+  } 
 }
+
+//gameover if the player reach the lava
+function gameOver(){
+
+if (player.y > 430){
+  gameStart = false;
+ }
+}
+
 
 /* =========== customEngine ============ */
 // jerome Cabugwason 12/18/21
