@@ -11,9 +11,7 @@ let elapsedTime;
 let lastFrame = 0;
 let fps;
 let gameStart = true;
-let spawnTimer=0;
-
-
+let spawnTimer = 0;
 
 // physics constants
 // only affects player
@@ -30,8 +28,8 @@ let playerSize = 32 * 2;
 // images
 const playerLeft = new Image();
 const playerRight = new Image();
-const Lava = new Image ();
-const dirtTwo = new Image ();
+const Lava = new Image();
+const dirtTwo = new Image();
 playerLeft.src = './spriteSheet/Character_ghos_left.png';
 playerRight.src = './spriteSheet/Character_ghost_Right.png';
 Lava.src = './spriteSheet/LavaSpriteSheet.png';
@@ -169,20 +167,22 @@ const platformArr = [
     spriteWidth: 1000,
     spriteHeight: 1000,
     counter: 0,
-    update(){
-      this.y += this.speed
+    update() {
+      this.y += this.speed;
     },
 
     draw: function () {
-        ctx.drawImage(dirtTwo,
-          this.spriteWidth * this.PlatformFrameX,
-          this.spriteHeight * this.PlatformFrameY,
-          this.spriteWidth,
-          this.spriteHeight,
-          Math.trunc(this.x),
-          Math.trunc(this.y),
-          this.width,
-          this.height,);
+      ctx.drawImage(
+        dirtTwo,
+        this.spriteWidth * this.PlatformFrameX,
+        this.spriteHeight * this.PlatformFrameY,
+        this.spriteWidth,
+        this.spriteHeight,
+        Math.trunc(this.x),
+        Math.trunc(this.y),
+        this.width,
+        this.height
+      );
     },
   },
   {
@@ -199,12 +199,13 @@ const platformArr = [
     spriteWidth: 1000,
     spriteHeight: 1000,
     counter: 0,
-    update(){
-      this.y += this.speed
+    update() {
+      this.y += this.speed;
     },
 
     draw: function () {
-      ctx.drawImage(dirtTwo,
+      ctx.drawImage(
+        dirtTwo,
         this.spriteWidth * this.PlatformFrameX,
         this.spriteHeight * this.PlatformFrameY,
         this.spriteWidth,
@@ -212,9 +213,8 @@ const platformArr = [
         Math.trunc(this.x),
         Math.trunc(this.y),
         this.width,
-        this.height,);
-
-      
+        this.height
+      );
     },
   },
   {
@@ -231,12 +231,13 @@ const platformArr = [
     spriteWidth: 1000,
     spriteHeight: 1000,
     counter: 0,
-    update(){
-      this.y += this.speed
+    update() {
+      this.y += this.speed;
     },
 
     draw: function () {
-      ctx.drawImage(dirtTwo,
+      ctx.drawImage(
+        dirtTwo,
         this.spriteWidth * this.PlatformFrameX,
         this.spriteHeight * this.PlatformFrameY,
         this.spriteWidth,
@@ -244,7 +245,8 @@ const platformArr = [
         Math.trunc(this.x),
         Math.trunc(this.y),
         this.width,
-        this.height,);
+        this.height
+      );
     },
   },
   {
@@ -261,12 +263,13 @@ const platformArr = [
     spriteWidth: 1000,
     spriteHeight: 1000,
     counter: 0,
-    update(){
-      this.y += this.speed
+    update() {
+      this.y += this.speed;
     },
 
     draw: function () {
-      ctx.drawImage(dirtTwo,
+      ctx.drawImage(
+        dirtTwo,
         this.spriteWidth * this.PlatformFrameX,
         this.spriteHeight * this.PlatformFrameY,
         this.spriteWidth,
@@ -274,7 +277,8 @@ const platformArr = [
         Math.trunc(this.x),
         Math.trunc(this.y),
         this.width,
-        this.height,);
+        this.height
+      );
     },
   },
   {
@@ -292,49 +296,13 @@ const platformArr = [
     spriteWidth: 1000,
     spriteHeight: 1000,
     counter: 0,
-    update(){
-      this.y += this.speed
+    update() {
+      this.y += this.speed;
     },
 
-    draw: function (){
-
-    ctx.drawImage(dirtTwo,
-      this.spriteWidth * this.PlatformFrameX,
-      this.spriteHeight * this.PlatformFrameY,
-      this.spriteWidth,
-      this.spriteHeight,
-      Math.trunc(this.x),
-      Math.trunc(this.y),
-      this.width,
-      this.height,);
-    },
-  },
-
-]
-//new platforms that's going to be spawned above the canvas
-class newPlatform {
-  constructor(){
-    //this will make the platform spawn random in X-axis
-    this.x = (Math.random()*(width-300)) + 15
-    //this will make the spawn platform spawn only at the top of canvas
-    this.y = 1;
-    this.radius =50;
-    this.speed = 1;
-    this.distance;
-    this.PlatformFrameX = 0,
-    this.PlatformFrameY = 0.29,
-    this.spriteWidth = 1000,
-    this.spriteHeight = 1000,
-    this.counter = 0,
-    this.width = 200,
-    this.height = 200
-  }
-  update(){
-    this.y += this.speed
-  }
-  draw(){
-    
-      ctx.drawImage(dirtTwo,
+    draw: function () {
+      ctx.drawImage(
+        dirtTwo,
         this.spriteWidth * this.PlatformFrameX,
         this.spriteHeight * this.PlatformFrameY,
         this.spriteWidth,
@@ -342,8 +310,45 @@ class newPlatform {
         Math.trunc(this.x),
         Math.trunc(this.y),
         this.width,
-        this.height,);
-    }
+        this.height
+      );
+    },
+  },
+];
+//new platforms that's going to be spawned above the canvas
+class newPlatform {
+  constructor() {
+    //this will make the platform spawn random in X-axis
+    this.x = Math.random() * (width - 300) + 15;
+    //this will make the spawn platform spawn only at the top of canvas
+    this.y = -50;
+    this.radius = 50;
+    this.speed = 1;
+    this.distance;
+    (this.PlatformFrameX = 0),
+      (this.PlatformFrameY = 0.29),
+      (this.spriteWidth = 1000),
+      (this.spriteHeight = 1000),
+      (this.counter = 0),
+      (this.width = 200),
+      (this.height = 200);
+  }
+  update() {
+    this.y += this.speed;
+  }
+  draw() {
+    ctx.drawImage(
+      dirtTwo,
+      this.spriteWidth * this.PlatformFrameX,
+      this.spriteHeight * this.PlatformFrameY,
+      this.spriteWidth,
+      this.spriteHeight,
+      Math.trunc(this.x),
+      Math.trunc(this.y),
+      this.width,
+      this.height
+    );
+  }
 }
 
 //Lava spritesheet
@@ -355,15 +360,14 @@ let lava = {
   oldY: 0,
   width: 150,
   height: 50,
-  
+
   PlatformFrameX: 0,
   PlatformFrameY: 0.33,
   spriteWidth: 640,
   spriteHeight: 480,
   counter: 0,
 
-  draw: function() {
-
+  draw: function () {
     this.counter++;
 
     if (this.counter > 15) {
@@ -375,19 +379,21 @@ let lava = {
 
       this.counter = 0;
     }
-for (let i=0; i<18; i++) {
-    ctx.drawImage(Lava,this.spriteWidth * this.PlatformFrameX,
-      this.spriteHeight * this.PlatformFrameY,
-      this.spriteWidth,
-      this.spriteHeight,
-     i*50+ Math.trunc(this.x),
-      Math.trunc(this.y),
-      this.width,
-      this.height,
+    for (let i = 0; i < 18; i++) {
+      ctx.drawImage(
+        Lava,
+        this.spriteWidth * this.PlatformFrameX,
+        this.spriteHeight * this.PlatformFrameY,
+        this.spriteWidth,
+        this.spriteHeight,
+        i * 50 + Math.trunc(this.x),
+        Math.trunc(this.y),
+        this.width,
+        this.height
       );
     }
-  }
-}
+  },
+};
 
 // executes when page is loaded
 window.onload = pageLoad();
@@ -454,7 +460,7 @@ function update() {
 function render() {
   // Clear the entire canvas
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+
   // ===== render ===== //
   // player
   // player.draw();
@@ -494,32 +500,30 @@ addEventListener('keyup', joystick.inputListener);
 // adds all the platforms to the map
 function addPlatforms() {
   //timer for the platform to be spawned
-  spawnTimer++
-  if (spawnTimer == 90){
-    spawnTimer = 0
+  spawnTimer++;
+  if (spawnTimer == 90) {
+    spawnTimer = 0;
     platformArr.push(new newPlatform());
-  }  
+  }
   for (let i = 0; i < platformArr.length; i++) {
-    platformArr[i].update()
+    platformArr[i].update();
     platformArr[i].draw();
   }
-  
+
   //delete platform outside the canvas
-  for(let i = 0; i <platformArr.length; i++){
-    if(platformArr[i].y > 470){
-      platformArr.splice(i,1);
+  for (let i = 0; i < platformArr.length; i++) {
+    if (platformArr[i].y > 470) {
+      platformArr.splice(i, 1);
     }
-  } 
+  }
 }
 
 //gameover if the player reach the lava
-function gameOver(){
-
-if (player.y > 430){
-  gameStart = false;
- }
+function gameOver() {
+  if (player.y > 430) {
+    gameStart = false;
+  }
 }
-
 
 /* =========== customEngine ============ */
 // jerome Cabugwason 12/18/21
@@ -642,7 +646,6 @@ function collisionEngine(player, platform) {
 }
 
 /* =========== customEngine END ============ */
-
 
 /*=========== trackers and visual debug aids ===========*/
 // jerome Cabugwason 12/18/21
