@@ -45,14 +45,14 @@ let joystick = {
   inputListener: function (event) {
     let inputState = event.type === 'keydown' ? true : false;
 
-    switch (event.key) {
-      case 'ArrowUp': // up arrow key
+    switch (event.key || event.keyCode) {
+      case 'ArrowUp' || 'w': // up arrow key
         joystick.up = inputState;
         break;
-      case 'ArrowLeft': // left arrow key
+      case 'ArrowLeft' || 'a': // left arrow key
         joystick.left = inputState;
         break;
-      case 'ArrowRight': // right arrow key
+      case 'ArrowRight' || 'd': // right arrow key
         joystick.right = inputState;
         break;
     }
@@ -351,7 +351,7 @@ class newPlatform {
   }
 }
 
-//Lava spritesheet
+//Lava spriteSheet
 let lava = {
   x: 1,
   y: 470,
@@ -518,7 +518,7 @@ function addPlatforms() {
   }
 }
 
-//gameover if the player reach the lava
+//gameOver if the player reach the lava
 function gameOver() {
   if (player.y > 430) {
     gameStart = false;
