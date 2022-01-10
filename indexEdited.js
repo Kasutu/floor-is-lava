@@ -1,4 +1,5 @@
-// init
+/* =========== INITIALIZATION ============ */
+
 // canvas settings
 let canvas;
 let ctx;
@@ -124,28 +125,6 @@ let player = {
     }
   },
 };
-
-// let platform = {
-//   x: Math.trunc(width / 2 - 150 / 2),
-//   y: Math.trunc(height - 90),
-//   velY: 0,
-//   oldX: 0,
-//   oldY: 0,
-//   width: 150,
-//   height: 15,
-
-//   draw: function () {
-//     // draw a stroke rectangle
-//     ctx.strokeStyle = 'white';
-//     ctx.lineWidth = 1;
-//     ctx.strokeRect(
-//       Math.trunc(this.x),
-//       Math.trunc(this.y),
-//       this.width,
-//       this.height
-//     );
-//   },
-// };
 
 // defines what platform to add in the map
 // push the random x values into the array
@@ -394,6 +373,9 @@ let lava = {
     }
   },
 };
+/*=========== INITIALIZATION END ===========*/
+
+/*=========== CORE ===========*/
 
 // executes when page is loaded
 window.onload = pageLoad();
@@ -477,10 +459,11 @@ function render() {
   gameOver();
 
   // debug render trackers
+
   // addLineTrack(player, platform);
   // addLineBoundaries(platform);
   // addLineBoundaries(player);
-  // addTrackingData();
+  addTrackingData(player);
 
   // Draw number to the screen
   ctx.font = '18px monospace';
@@ -490,6 +473,9 @@ function render() {
   ctx.fillText(`player delta-V: ${Math.trunc(player.velY)}m/s`, 10, 60);
   // console.log(player.velY);
 }
+
+/*=========== CORE END ===========*/
+
 
 /* =========== FUNCTIONS SECTION ============ */
 
@@ -501,7 +487,7 @@ addEventListener('keyup', joystick.inputListener);
 function addPlatforms() {
   //timer for the platform to be spawned
   spawnTimer++;
-  if (spawnTimer == 90) {
+  if (spawnTimer === 90) {
     spawnTimer = 0;
     platformArr.push(new newPlatform());
   }
@@ -512,7 +498,7 @@ function addPlatforms() {
 
   //delete platform outside the canvas
   for (let i = 0; i < platformArr.length; i++) {
-    if (platformArr[i].y > 470) {
+    if (platformArr[i].y > 500) {
       platformArr.splice(i, 1);
     }
   }
@@ -651,10 +637,10 @@ function collisionEngine(player, platform) {
 // jerome Cabugwason 12/18/21
 
 // on screen data anchored to player
-function addTrackingData() {
+function addTrackingData(player) {
   // data styling
   ctx.font = '15px monospace';
-  ctx.fillStyle = 'red';
+  ctx.fillStyle = 'white';
 
   // floating data
   ctx.fillText(
@@ -691,13 +677,6 @@ function addTrackingData() {
     `isAirborne: ${player.isAirborne}`,
     player.x - player.width + 50,
     player.y - 150
-  );
-
-  // platform floating data
-  ctx.fillText(
-    `platform: x: ${platform.x} y: ${platform.y}`,
-    platform.x - platform.width - 30,
-    platform.y - 20
   );
 }
 
