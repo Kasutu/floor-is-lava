@@ -31,10 +31,12 @@ const playerLeft = new Image();
 const playerRight = new Image();
 const Lava = new Image();
 const dirtTwo = new Image();
+const background = new Image();
 playerLeft.src = './spriteSheet/Character_ghos_left.png';
 playerRight.src = './spriteSheet/Character_ghost_Right.png';
 Lava.src = './spriteSheet/LavaSpriteSheet.png';
 dirtTwo.src = './spriteSheet/Dirt_Lava_2.png';
+background.src = './spriteSheet/Background1.png';
 
 // movement joystick
 let joystick = {
@@ -373,6 +375,36 @@ let lava = {
     }
   },
 };
+
+//background
+let Background = {
+  x: -1,
+  y: -1,
+  velY: 0,
+  oldX: 0,
+  oldY: 0,
+  width: 1001,
+  height: 501,
+
+  PlatformFrameX: 0,
+  PlatformFrameY: 0,
+  spriteWidth: 720,
+  spriteHeight: 480,
+
+  draw: function (){
+    ctx.drawImage(
+      background,
+      this.spriteWidth * this.PlatformFrameX,
+      this.spriteHeight * this.PlatformFrameY,
+      this.spriteWidth,
+      this.spriteHeight,
+      Math.trunc(this.x),
+      Math.trunc(this.y),
+      this.width,
+      this.height
+    );
+  },
+};
 /*=========== INITIALIZATION END ===========*/
 
 /*=========== CORE ===========*/
@@ -444,6 +476,9 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // ===== render ===== //
+  //Background
+   Background.draw();
+  
   // platform
   // platform.draw();
   addPlatforms();
