@@ -168,7 +168,7 @@ const platformArr = [
   },
   {
     x: Math.trunc(width - 250),
-    y: Math.trunc(height - 300),
+    y: Math.trunc(height - 340),
     velY: 0,
     oldX: 0,
     oldY: 0,
@@ -264,7 +264,7 @@ const platformArr = [
   },
   {
     x: Math.trunc(width / 2 - 150 / 2),
-    y: Math.trunc(height - 450),
+    y: Math.trunc(height - 490),
     velY: 0,
     oldX: 0,
     oldY: 0,
