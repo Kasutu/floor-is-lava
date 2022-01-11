@@ -444,13 +444,13 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // ===== render ===== //
-  // player
-  // player.draw();
-  player.animate();
-
   // platform
   // platform.draw();
   addPlatforms();
+  
+  // player
+  // player.draw();
+  player.animate();
 
   //lava_platform
   // lava.draw()
