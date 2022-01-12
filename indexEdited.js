@@ -48,14 +48,14 @@ let joystick = {
   inputListener: function (event) {
     let inputState = event.type === 'keydown' ? true : false;
 
-    switch (event.key || event.keyCode) {
-      case 'ArrowUp' || 'w': // up arrow key
+    switch (event.key) {
+      case 'ArrowUp': // up arrow key
         joystick.up = inputState;
         break;
-      case 'ArrowLeft' || 'a': // left arrow key
+      case 'ArrowLeft': // left arrow key
         joystick.left = inputState;
         break;
-      case 'ArrowRight' || 'd': // right arrow key
+      case 'ArrowRight': // right arrow key
         joystick.right = inputState;
         break;
     }
