@@ -24,7 +24,7 @@ const jumpHeight = 2.8;
 const movementSpeed = 5;
 
 // entity creation
-let playerSize = 32 * 2;
+let playerSize = 40;
 
 // images
 const playerLeft = new Image();
@@ -108,7 +108,7 @@ let player = {
         this.spriteWidth,
         this.spriteHeight,
         Math.floor(this.x),
-        Math.floor(this.y),
+        Math.floor(this.y + 5),
         this.width,
         this.height
       );
@@ -120,7 +120,7 @@ let player = {
         this.spriteWidth,
         this.spriteHeight,
         Math.floor(this.x),
-        Math.floor(this.y),
+        Math.floor(this.y + 5),
         this.width,
         this.height
       );
@@ -391,7 +391,7 @@ let Background = {
   spriteWidth: 720,
   spriteHeight: 480,
 
-  draw: function (){
+  draw: function () {
     ctx.drawImage(
       background,
       this.spriteWidth * this.PlatformFrameX,
@@ -477,12 +477,12 @@ function render() {
 
   // ===== render ===== //
   //Background
-   Background.draw();
-  
+  Background.draw();
+
   // platform
   // platform.draw();
   addPlatforms();
-  
+
   // player
   // player.draw();
   player.animate();
@@ -497,7 +497,7 @@ function render() {
 
   // addLineTrack(player, platform);
   // addLineBoundaries(platform);
-  // addLineBoundaries(player);
+  addLineBoundaries(player);
   addTrackingData(player);
 
   // Draw number to the screen
@@ -510,7 +510,6 @@ function render() {
 }
 
 /*=========== CORE END ===========*/
-
 
 /* =========== FUNCTIONS SECTION ============ */
 
@@ -676,43 +675,25 @@ function addTrackingData(player) {
   // data styling
   ctx.font = '15px monospace';
   ctx.fillStyle = 'white';
+  let dataX = 800;
 
   // floating data
   ctx.fillText(
+    `CAN JUMP? ${!player.isJumping && player.isOnFloor}`,
+    dataX,
+    160
+  );
+  ctx.fillText(
     `player: x: ${Math.trunc(player.x)} y: ${Math.trunc(player.y)}`,
-    player.x - player.width + 50,
-    player.y - 30
+    dataX,
+    140
   );
-  ctx.fillText(
-    `isJumping: ${player.isJumping}`,
-    player.x - player.width + 50,
-    player.y - 50
-  );
-  ctx.fillText(
-    `onFloor: ${player.isOnFloor}`,
-    player.x - player.width + 50,
-    player.y - 70
-  );
-  ctx.fillText(
-    `isOutSide: ${player.isOutSide}`,
-    player.x - player.width + 50,
-    player.y - 90
-  );
-  ctx.fillText(
-    `isUnder: ${player.isUnder}`,
-    player.x - player.width + 50,
-    player.y - 110
-  );
-  ctx.fillText(
-    `isOnPlatform: ${player.isOnPlatform}`,
-    player.x - player.width + 50,
-    player.y - 130
-  );
-  ctx.fillText(
-    `isAirborne: ${player.isAirborne}`,
-    player.x - player.width + 50,
-    player.y - 150
-  );
+  ctx.fillText(`isJumping: ${player.isJumping}`, dataX, 120);
+  ctx.fillText(`onFloor: ${player.isOnFloor}`, dataX, 100);
+  ctx.fillText(`isOutSide: ${player.isOutSide}`, dataX, 80);
+  ctx.fillText(`isUnder: ${player.isUnder}`, dataX, 60);
+  ctx.fillText(`isOnPlatform: ${player.isOnPlatform}`, dataX, 40);
+  ctx.fillText(`isAirborne: ${player.isAirborne}`, dataX, 20);
 }
 
 // shows distance visually between 2 objects
