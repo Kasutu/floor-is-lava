@@ -415,11 +415,13 @@ window.onload = pageLoad();
 // start or pause the game
 function playGame(val) {
   if (val === 'play') {
+    document.getElementById('bgMusic').play();
     gameStart = true;
     pageLoad();
   }
 
   if (val === 'pause') {
+    document.getElementById('bgMusic').pause();
     gameStart = false;
   }
 }
@@ -460,8 +462,6 @@ function gameLoop(currentTime) {
 
 // calculations and update
 function update() {
-  // default settings
-  // player, platform, friction = 0.9, gravity = 0.7, jumpHeight = 2.8, movementSpeed = 5;
   applyPhysicsTo(player);
 
   // checks collisions for all platforms or for single objects
@@ -500,13 +500,12 @@ function render() {
   addLineBoundaries(player);
   addTrackingData(player);
 
-  // Draw number to the screen
+  // player debug data
   ctx.font = '18px monospace';
   ctx.fillStyle = 'black';
   ctx.fillText(`FPS: ${fps}`, 10, 20);
   ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 40);
   ctx.fillText(`player delta-V: ${Math.trunc(player.velY)}m/s`, 10, 60);
-  // console.log(player.velY);
 }
 
 /*=========== CORE END ===========*/
@@ -540,7 +539,8 @@ function addPlatforms() {
 
 //gameOver if the player reach the lava
 function gameOver() {
-  if (player.y > 430) {
+  if (player.y > 450) {
+    document.getElementById('touchLava').play();
     gameStart = false;
   }
 }
@@ -554,6 +554,7 @@ function applyPhysicsTo(player) {
     player.isJumping = true;
     player.velY = -movementSpeed * jumpHeight;
     joystick.up = false;
+    document.getElementById('jump').play();
   }
 
   if (player.isJumping) {
