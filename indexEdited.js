@@ -62,6 +62,10 @@ let joystick = {
   },
 };
 
+// keypress listener
+addEventListener('keydown', joystick.inputListener);
+addEventListener('keyup', joystick.inputListener);
+
 // properties
 let player = {
   width: playerSize,
@@ -511,10 +515,6 @@ function render() {
 /*=========== CORE END ===========*/
 
 /* =========== FUNCTIONS SECTION ============ */
-
-// keypress listener
-addEventListener('keydown', joystick.inputListener);
-addEventListener('keyup', joystick.inputListener);
 
 // adds all the platforms to the map
 function addPlatforms() {
