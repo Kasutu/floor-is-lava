@@ -11,7 +11,7 @@ let currentTime = Date.now();
 let elapsedTime;
 let lastFrame = 0;
 let fps;
-let score = 0
+let score = 0;
 let gameStart = false;
 let spawnTimer = 0;
 
@@ -19,13 +19,16 @@ let spawnTimer = 0;
 // only affects player
 // default settings
 const friction = 0.85;
-const airborneFriction = 0.9;
+const airborneFriction = 0.92;
 const gravity = 0.7;
-const jumpHeight = 2.8;
-const movementSpeed = 5;
+const jumpHeight = 2.9;
+const movementSpeed = 5.5;
 
 // entity creation
-let playerSize = 40;
+let playerSize = 32 * 2;
+
+// platform settings
+let platformSpeed = 1;
 
 // images
 const playerLeft = new Image();
@@ -45,27 +48,24 @@ let joystick = {
   down: false,
   left: false,
   right: false,
-  engagedKey: '',
   inputListener: function (event) {
     let inputState = event.type === 'keydown' ? true : false;
 
-    switch (event.key) {
-      case 'ArrowUp': // up arrow key
+    switch (true) {
+      case event.key === 'ArrowUp' ||
+        event.keyCode === 87 ||
+        event.keyCode === 32: // up arrow key
         joystick.up = inputState;
         break;
-      case 'ArrowLeft': // left arrow key
+      case event.key === 'ArrowLeft' || event.keyCode === 65: // left arrow key
         joystick.left = inputState;
         break;
-      case 'ArrowRight': // right arrow key
+      case event.key === 'ArrowRight' || event.keyCode === 68: // right arrow key
         joystick.right = inputState;
         break;
     }
   },
 };
-
-// keypress listener
-addEventListener('keydown', joystick.inputListener);
-addEventListener('keyup', joystick.inputListener);
 
 // properties
 let player = {
@@ -146,7 +146,7 @@ const platformArr = [
     oldY: 0,
     width: 200,
     height: 200,
-    speed: 1,
+    speed: platformSpeed,
     //Platform sheet variables
     PlatformFrameX: 0,
     PlatformFrameY: 0.29,
@@ -179,7 +179,7 @@ const platformArr = [
     oldY: 0,
     width: 200,
     height: 200,
-    speed: 1,
+    speed: platformSpeed,
     PlatformFrameX: 0,
     PlatformFrameY: 0.29,
     spriteWidth: 1000,
@@ -211,7 +211,7 @@ const platformArr = [
     oldY: 0,
     width: 200,
     height: 200,
-    speed: 1,
+    speed: platformSpeed,
     PlatformFrameX: 0,
     PlatformFrameY: 0.29,
     spriteWidth: 1000,
@@ -243,7 +243,7 @@ const platformArr = [
     oldY: 0,
     width: 200,
     height: 200,
-    speed: 1,
+    speed: platformSpeed,
     PlatformFrameX: 0,
     PlatformFrameY: 0.29,
     spriteWidth: 1000,
@@ -275,7 +275,7 @@ const platformArr = [
     oldY: 0,
     width: 200,
     height: 200,
-    speed: 1,
+    speed: platformSpeed,
 
     PlatformFrameX: 0,
     PlatformFrameY: 0.29,
@@ -307,9 +307,9 @@ class newPlatform {
     //this will make the platform spawn random in X-axis
     this.x = Math.random() * (width - 300) + 15;
     //this will make the spawn platform spawn only at the top of canvas
-    this.y = -50;
+    this.y = -80;
     this.radius = 50;
-    this.speed = 1;
+    this.speed = platformSpeed;
     this.distance;
     (this.PlatformFrameX = 0),
       (this.PlatformFrameY = 0.29),
@@ -420,11 +420,10 @@ window.onload = pageLoad();
 // start or pause the game
 function playGame(val) {
   if (val === 'play') {
-    requestAnimationFrame(gameLoop)
+    requestAnimationFrame(gameLoop);
     document.getElementById('bgMusic').play();
     gameStart = true;
-    document.getElementById('mainMenu').style.display = "none"
-    pageLoad();
+    document.getElementById('mainMenu').style.display = 'none';
   }
 
   if (val === 'pause') {
@@ -432,7 +431,7 @@ function playGame(val) {
     gameStart = false;
   }
   if (val === 'restart') {
-    requestAnimationFrame(gameLoop)
+    requestAnimationFrame(gameLoop);
     document.getElementById('bgMusic').play();
     gameStart = true;
   }
@@ -474,7 +473,7 @@ function gameLoop(currentTime) {
 
 // calculations and update
 function update() {
-  applyPhysicsTo(player);
+  movement(player);
 
   // checks collisions for all platforms or for single objects
   for (let i = 0; i < platformArr.length; i++) {
@@ -521,6 +520,15 @@ function render() {
   ctx.fillText(`Score: ${score}`, 10, 80);
 }
 
+// Adds difficulty
+if (100 % score === 0) {
+  platformSpeed++;
+}
+
+// keypress listener
+addEventListener('keydown', joystick.inputListener);
+addEventListener('keyup', joystick.inputListener);
+
 /*=========== CORE END ===========*/
 
 /* =========== FUNCTIONS SECTION ============ */
@@ -548,19 +556,19 @@ function addPlatforms() {
 
 //gameOver if the player reach the lava
 function gameOver() {
- if (player.y > 450) {
+  if (player.y > 430) {
     document.getElementById('bgMusic').pause();
     document.getElementById('touchLava').play();
     gameStart = false;
-    document.getElementById('mainMenu').style.display = "flex"
-    document.getElementById('score').innerHTML = score
+    document.getElementById('mainMenu').style.display = 'flex';
+    document.getElementById('score').innerHTML = score;
   }
 }
 
 /* =========== customEngine ============ */
 // jerome Cabugwason 12/18/21
 
-function applyPhysicsTo(player) {
+function movement(player) {
   // movement and position behavior calculation
   if (joystick.up && !player.isJumping && player.isOnFloor) {
     player.isJumping = true;
@@ -674,7 +682,7 @@ function collisionEngine(player, platform) {
       player.isUnder = false;
       player.isOnPlatform = true;
       player.isOutSide = false;
-      score ++
+      score++;
     }
   }
 }

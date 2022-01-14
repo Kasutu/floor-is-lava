@@ -31,13 +31,12 @@
         align-items: center;
         padding: 10px;
       }
-       .mainMenu {
+      .mainMenu {
         position: fixed;
         inset: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        
       }
       .Menu {
         text-align: center;
@@ -49,7 +48,7 @@
         padding: 0px;
         margin-bottom: 5px;
         font-size: 40px;
-        font:bold
+        font: bold;
       }
       .playButton {
         background: darksalmon;
@@ -78,35 +77,39 @@
         Canvas is not supported in your browser.
       </canvas>
       <!-- Menus -->
-    <div class="mainMenu" id="mainMenu">
-      <div class="Menu">
-        <h1 class="score" id="score">0</h1>
-        <p class="textScore">Score</p>
-        <div>
-          <button class="playButton" onclick="playGame('play')">PLAY</button>
-          <button class="pauseButton" onclick="playGame('pause')">PAUSE</button>
-          <button class="restartButton" onclick="location.reload()">RESTART</button>
+      <div class="mainMenu" id="mainMenu">
+        <div class="Menu">
+          <h1 class="score" id="score">0</h1>
+          <p class="textScore">Score</p>
+          <div>
+            <button class="playButton" onclick="playGame('play')">PLAY</button>
+            <button class="pauseButton" onclick="playGame('pause')">
+              PAUSE
+            </button>
+            <button class="restartButton" onclick="location.reload()">
+              RESTART
+            </button>
+          </div>
         </div>
       </div>
-    </div>
       <!-- SFX -->
       <audio
         id="jump"
         controls
         style="display: none"
-        src="bg/sound (jump).wav"
+        src="SFX/jump.wav"
       ></audio>
       <audio
         id="touchLava"
         controls
         style="display: none"
-        src="bg/mixkit-player-losing-or-failing-2042.wav"
+        src="SFX/gameOver.wav"
       ></audio>
       <audio
         id="bgMusic"
         controls
         style="display: none"
-        src="bgMusic.mp3"
+        src="SFX/bgMusic.mp3"
       ></audio>
     </div>
     <!-- js file link tag -->
