@@ -417,6 +417,11 @@ let Background = {
 // executes when page is loaded
 window.onload = pageLoad();
 
+function playAudio(){
+  let bgMusic = document.getElementById('bgMusic');
+  bgMusic.play();
+};
+
 // start or pause the game
 function playGame(val) {
   if (val === 'play') {
