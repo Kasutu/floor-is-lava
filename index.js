@@ -11,7 +11,8 @@ let currentTime = Date.now();
 let elapsedTime;
 let lastFrame = 0;
 let fps;
-let gameStart = true;
+let score = 0
+let gameStart = false;
 let spawnTimer = 0;
 
 // physics constants
@@ -419,14 +420,21 @@ window.onload = pageLoad();
 // start or pause the game
 function playGame(val) {
   if (val === 'play') {
+    requestAnimationFrame(gameLoop)
     document.getElementById('bgMusic').play();
     gameStart = true;
+    document.getElementById('mainMenu').style.display = "none"
     pageLoad();
   }
 
   if (val === 'pause') {
     document.getElementById('bgMusic').pause();
     gameStart = false;
+  }
+  if (val === 'restart') {
+    requestAnimationFrame(gameLoop)
+    document.getElementById('bgMusic').play();
+    gameStart = true;
   }
 }
 
@@ -510,6 +518,7 @@ function render() {
   ctx.fillText(`FPS: ${fps}`, 10, 20);
   ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 40);
   ctx.fillText(`player delta-V: ${Math.trunc(player.velY)}m/s`, 10, 60);
+  ctx.fillText(`Score: ${score}`, 10, 80);
 }
 
 /*=========== CORE END ===========*/
@@ -539,9 +548,12 @@ function addPlatforms() {
 
 //gameOver if the player reach the lava
 function gameOver() {
-  if (player.y > 450) {
+ if (player.y > 450) {
+    document.getElementById('bgMusic').pause();
     document.getElementById('touchLava').play();
     gameStart = false;
+    document.getElementById('mainMenu').style.display = "flex"
+    document.getElementById('score').innerHTML = score
   }
 }
 
@@ -662,6 +674,7 @@ function collisionEngine(player, platform) {
       player.isUnder = false;
       player.isOnPlatform = true;
       player.isOutSide = false;
+      score ++
     }
   }
 }
