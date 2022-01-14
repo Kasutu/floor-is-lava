@@ -63,6 +63,9 @@ let joystick = {
       case event.key === 'ArrowRight' || event.keyCode === 68: // right arrow key
         joystick.right = inputState;
         break;
+      case event.keyCode === 80: // pause
+        playGame('pause');
+        break;
     }
   },
 };
@@ -417,31 +420,6 @@ let Background = {
 // executes when page is loaded
 window.onload = pageLoad();
 
-function playAudio(){
-  let bgMusic = document.getElementById('bgMusic');
-  bgMusic.play();
-};
-
-// start or pause the game
-function playGame(val) {
-  if (val === 'play') {
-    requestAnimationFrame(gameLoop);
-    document.getElementById('bgMusic').play();
-    gameStart = true;
-    document.getElementById('mainMenu').style.display = 'none';
-  }
-
-  if (val === 'pause') {
-    document.getElementById('bgMusic').pause();
-    gameStart = false;
-  }
-  if (val === 'restart') {
-    requestAnimationFrame(gameLoop);
-    document.getElementById('bgMusic').play();
-    gameStart = true;
-  }
-}
-
 // loads the page
 function pageLoad() {
   canvas = document.querySelector('canvas');
@@ -450,7 +428,7 @@ function pageLoad() {
   // sets the canvas width and hight dynamically
   canvas.width = width;
   canvas.height = height;
-  canvas.style.background = 'purple';
+  canvas.style.background = 'brown';
 
   // first animation request
   requestAnimationFrame(gameLoop);
@@ -513,22 +491,26 @@ function render() {
 
   // addLineTrack(player, platform);
   // addLineBoundaries(platform);
-  addLineBoundaries(player);
-  addTrackingData(player);
+  // addLineBoundaries(player);
+  // addTrackingData(player);
 
   // player debug data
-  ctx.font = '18px monospace';
-  ctx.fillStyle = 'black';
-  ctx.fillText(`FPS: ${fps}`, 10, 20);
-  ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 40);
-  ctx.fillText(`player delta-V: ${Math.trunc(player.velY)}m/s`, 10, 60);
-  ctx.fillText(`Score: ${score}`, 10, 80);
+  ctx.font = '30px monospace';
+  ctx.fillStyle = 'white';
+  ctx.fillText(`Score: ${score}`, 10, 30);
+  // ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 60);
+  // ctx.fillText(`player delta-V: ${Math.trunc(player.velY)}m/s`, 10, 90);
+  // ctx.fillText(`FPS: ${fps}`, 10, 120);
 }
 
-// Adds difficulty
-if (100 % score === 0) {
-  platformSpeed++;
-}
+// let currentPlatformSpeed = 1;
+
+// // Adds difficulty
+// if (score % 100 === 100) {
+//   platformSpeed += 10;
+//   currentPlatformSpeed += 2;p
+//   console.log(`platform spd ${platformSpeed}`);
+// }
 
 // keypress listener
 addEventListener('keydown', joystick.inputListener);
@@ -537,6 +519,33 @@ addEventListener('keyup', joystick.inputListener);
 /*=========== CORE END ===========*/
 
 /* =========== FUNCTIONS SECTION ============ */
+
+function playAudio() {
+  let bgMusic = document.getElementById('bgMusic');
+  bgMusic.play();
+}
+
+// start or pause the game
+function playGame(val) {
+  if (val === 'play') {
+    requestAnimationFrame(gameLoop);
+    document.getElementById('bgMusic').play();
+    gameStart = true;
+    document.getElementById('mainMenu').style.display = 'none';
+  }
+
+  if (val === 'pause') {
+    document.getElementById('bgMusic').pause();
+    gameStart = false;
+    document.getElementById('mainMenu').style.display = 'flex';
+    document.getElementById('score').innerHTML = score;
+  }
+  if (val === 'restart') {
+    requestAnimationFrame(gameLoop);
+    document.getElementById('bgMusic').play();
+    gameStart = true;
+  }
+}
 
 // adds all the platforms to the map
 function addPlatforms() {
