@@ -12,6 +12,7 @@ let elapsedTime;
 let lastFrame = 0;
 let fps;
 let score = 0;
+let highScore = localStorage.getItem('highScore');
 let gameStart = false;
 let spawnTimer = 0;
 
@@ -25,7 +26,7 @@ const jumpHeight = 2.9;
 const movementSpeed = 5.5;
 
 // entity creation
-let playerSize = 32 * 2;
+let playerSize = 32 * 1.8;
 
 // platform settings
 let platformSpeed = 1;
@@ -65,6 +66,9 @@ let joystick = {
         break;
       case event.keyCode === 80: // pause
         playGame('pause');
+        break;
+      case event.keyCode === 82: // pause
+        resetHighScore();
         break;
     }
   },
@@ -431,7 +435,11 @@ function pageLoad() {
   canvas.style.background = 'brown';
 
   // first animation request
-  requestAnimationFrame(gameLoop);
+  // requestAnimationFrame(gameLoop);
+
+  Background.draw();
+  document.getElementById('highScore').innerHTML = highScore;
+  // console.log('Your page is loaded');
 }
 
 // the game loop
@@ -457,6 +465,7 @@ function gameLoop(currentTime) {
 // calculations and update
 function update() {
   movement(player);
+  saveHighScore();
 
   // checks collisions for all platforms or for single objects
   for (let i = 0; i < platformArr.length; i++) {
@@ -481,10 +490,9 @@ function render() {
   // player.draw();
   player.animate();
 
-  //lava_platform
+  // lava
   // lava.draw()
   lava.draw();
-
   gameOver();
 
   // debug render trackers
@@ -495,22 +503,14 @@ function render() {
   // addTrackingData(player);
 
   // player debug data
-  ctx.font = '30px monospace';
+  ctx.font = '20px monospace';
   ctx.fillStyle = 'white';
   ctx.fillText(`Score: ${score}`, 10, 30);
+  ctx.fillText(`highScore: ${highScore}`, 10, 60);
   // ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 60);
   // ctx.fillText(`player delta-V: ${Math.trunc(player.velY)}m/s`, 10, 90);
   // ctx.fillText(`FPS: ${fps}`, 10, 120);
 }
-
-// let currentPlatformSpeed = 1;
-
-// // Adds difficulty
-// if (score % 100 === 100) {
-//   platformSpeed += 10;
-//   currentPlatformSpeed += 2;p
-//   console.log(`platform spd ${platformSpeed}`);
-// }
 
 // keypress listener
 addEventListener('keydown', joystick.inputListener);
@@ -519,6 +519,18 @@ addEventListener('keyup', joystick.inputListener);
 /*=========== CORE END ===========*/
 
 /* =========== FUNCTIONS SECTION ============ */
+
+function saveHighScore() {
+  if (score > highScore) {
+    localStorage.setItem('highScore', score);
+  } else {
+    localStorage.setItem('highScore', score);
+  }
+}
+
+function resetHighScore() {
+  localStorage.setItem('highScore', '0');
+}
 
 function playAudio() {
   let bgMusic = document.getElementById('bgMusic');
@@ -537,9 +549,11 @@ function playGame(val) {
   if (val === 'pause') {
     document.getElementById('bgMusic').pause();
     gameStart = false;
-    document.getElementById('mainMenu').style.display = 'flex';
     document.getElementById('score').innerHTML = score;
+    document.getElementById('highScore').innerHTML = highScore;
+    document.getElementById('mainMenu').style.display = 'flex';
   }
+
   if (val === 'restart') {
     requestAnimationFrame(gameLoop);
     document.getElementById('bgMusic').play();
@@ -574,8 +588,9 @@ function gameOver() {
     document.getElementById('bgMusic').pause();
     document.getElementById('touchLava').play();
     gameStart = false;
-    document.getElementById('mainMenu').style.display = 'flex';
     document.getElementById('score').innerHTML = score;
+    document.getElementById('highScore').innerHTML = highScore;
+    document.getElementById('mainMenu').style.display = 'flex';
   }
 }
 
