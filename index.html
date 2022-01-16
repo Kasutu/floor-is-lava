@@ -50,7 +50,11 @@
         text-align: center;
         width: 500px;
         padding: 6px;
-        background: cyan;
+      background-image: url("menu bg.gif");
+      background-size: 700px;
+      background-repeat: no-repeat;
+      background-position-x: center;
+      background-position-y: 100px;
       }
       .score {
         padding: 0px;
@@ -102,30 +106,6 @@
         <!-- alternate text when canvas is not supported -->
         Canvas is not supported in your browser.
       </canvas>
-      <!-- SFX -->
-      <audio
-        id="jump"
-        controls
-        style="display: none"
-        HEAD
-        src="SFX/jump.wav"
-      ></audio>
-      <audio
-        id="touchLava"
-        controls
-        style="display: none"
-        HEAD
-        src="SFX/gameOver.wav"
-      ></audio>
-      <audio
-        id="bgMusic"
-        autoplay="playAudio()"
-        controls
-        style="display: none"
-        HEAD
-        src="SFX/bgMusic.mp3"
-      ></audio>
-    </div>
     <div class="controls">
       Keyboard Controls </br>
       WASD - movement | R - reset high score | P - pause
