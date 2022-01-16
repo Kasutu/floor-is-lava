@@ -532,22 +532,38 @@ function resetHighScore() {
   localStorage.setItem('highScore', '0');
 }
 
-function playAudio() {
-  let bgMusic = document.getElementById('bgMusic');
-  bgMusic.play();
-}
+let jump;
+let touchLava;
+let bgMusic;
+function gamesound(src) {
+  this.gamesound = document.createElement("audio");
+  this.gamesound.src = src;
+  this.gamesound.setAttribute("preload", "auto");
+  this.gamesound.setAttribute("controls", "none");
+  this.gamesound.style.display = "none";
+  document.body.appendChild(this.gamesound);
+  this.play = function () {
+    this.gamesound.play();
+  }
+  this.stop = function () {
+    this.gamesound.pause();
+  }
+};
 
 // start or pause the game
 function playGame(val) {
   if (val === 'play') {
-    requestAnimationFrame(gameLoop);
-    document.getElementById('bgMusic').play();
+    requestAnimationFrame(gameLoop);  
+    jump = new gamesound("SFX/jump.wav");
+    touchLava = new gamesound("SFX/gameOver.wav"); 
+    bgMusic= new gamesound("SFX/bgMusic.mp3"); 
+    bgMusic.play();    
     gameStart = true;
     document.getElementById('mainMenu').style.display = 'none';
   }
 
   if (val === 'pause') {
-    document.getElementById('bgMusic').pause();
+    bgMusic.stop();    
     gameStart = false;
     document.getElementById('score').innerHTML = score;
     document.getElementById('highScore').innerHTML = highScore;
@@ -556,7 +572,6 @@ function playGame(val) {
 
   if (val === 'restart') {
     requestAnimationFrame(gameLoop);
-    document.getElementById('bgMusic').play();
     gameStart = true;
   }
 }
@@ -584,9 +599,9 @@ function addPlatforms() {
 
 //gameOver if the player reach the lava
 function gameOver() {
-  if (player.y > 430) {
-    document.getElementById('bgMusic').pause();
-    document.getElementById('touchLava').play();
+  if (player.y > 430) {  
+    touchLava.play();
+    bgMusic.stop();
     gameStart = false;
     document.getElementById('score').innerHTML = score;
     document.getElementById('highScore').innerHTML = highScore;
@@ -603,7 +618,7 @@ function movement(player) {
     player.isJumping = true;
     player.velY = -movementSpeed * jumpHeight;
     joystick.up = false;
-    document.getElementById('jump').play();
+    jump.play();
   }
 
   if (player.isJumping) {
