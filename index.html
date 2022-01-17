@@ -3,10 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Game Title</title>
-    <meta name="description" content="Final Project for SE-1" />
+    <title>The Floor is lava</title>
+    <meta name="description" content="made by Riot games" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
+      /* add fonts url here */
+      /* uncomment for use */
+
+      /* @font-face {
+        font-family: Retro Computer;
+        src: url('fonts/');
+      } */
+
       /* style here */
       canvas {
         border: 10px solid rgb(21, 37, 21);
@@ -14,7 +22,7 @@
 
       html {
         overflow: hidden;
-        background-image: url('map/bgMagma.png');
+        background-image: url('sprites/bgMagma.png');
       }
 
       header {
@@ -39,6 +47,7 @@
         align-items: center;
         padding: 10px;
       }
+
       .mainMenu {
         position: fixed;
         inset: 0;
@@ -46,6 +55,7 @@
         align-items: center;
         justify-content: center;
       }
+
       .Menu {
         text-align: center;
         width: 700px;
@@ -53,20 +63,26 @@
         padding: 6px;
         border: 11px solid;        
         border-radius: 50px;
-        background-image: url("menu bg.gif");
+        background-image: url("sprites/menu bg.gif");
         background-size: 730px;
         background-position: center;
         background-repeat: no-repeat;
         background-position-y: -111px;
         border-color: #cf1020;
       }
+
       .score {
         padding: 0px;
         margin-bottom: 5px;
         font-size: 40px;
-        font: Retro Computer;
+      }
+
+      .score, p {
+        color: aliceblue;
+        font: Retro Computer; 
         font-family: Retro Computer;
       }
+
       .playButton {
         background: darksalmon;
         padding: 10px;
@@ -74,6 +90,7 @@
         border-radius: 12px;
         font-family: Retro Computer;
       }
+
       .pauseButton {
         background: darksalmon;
         padding: 10px;
@@ -81,6 +98,7 @@
         border-radius: 12px;
         font-family: Retro Computer;
       }
+
       .restartButton {
         background: darksalmon;
         padding: 10px;
@@ -112,6 +130,7 @@
         <!-- alternate text when canvas is not supported -->
         Canvas is not supported in your browser.
       </canvas>
+    </div>
     <div class="controls">
       Keyboard Controls </br>
       WASD - movement | R - reset high score | P - pause
