@@ -1,0 +1,98 @@
+/* add fonts url here */
+      /* uncomment for use */
+
+      @font-face {
+        font-family: retro;
+        src: url('font/retroComputer.ttf');
+      }
+
+      /* style here */
+      canvas {
+        border: 10px solid rgb(21, 37, 21);
+      }
+
+      html {
+        overflow: hidden;
+        background-image: url('sprites/bgMagma.png');
+      }
+
+      header {
+        font-size: 20px;
+        color: black;
+        font-family: monospace;
+      }
+
+      .controls {
+        color: white;
+        text-align: center;
+        font-family: monospace;
+        font-size: 20px;
+        background-color: rgb(29, 0, 0);
+      }
+
+      .parentDiv {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+      }
+
+      .mainMenu {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .Menu {
+        text-align: center;
+        width: 700px;
+        height: 1000 px;
+        padding: 6px;
+        border: 11px solid;        
+        border-radius: 50px;
+        background-image: url("sprites/menu bg.gif");
+        background-size: 730px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-position-y: -111px;
+        border-color: #cf1020;
+      }
+
+      .score {
+        padding: 0px;
+        margin-bottom: 5px;
+        font-size: 40px;
+      }
+
+      .score, p {
+        color: aliceblue;
+        font-family: retro;
+      }
+
+      .playButton {
+        background: darksalmon;
+        padding: 10px;
+        width: 100px;
+        border-radius: 12px;
+        font-family: retro;
+      }
+
+      .pauseButton {
+        background: darksalmon;
+        padding: 10px;
+        width: 100px;
+        border-radius: 12px;
+        font-family: retro;
+      }
+
+      .restartButton {
+        background: darksalmon;
+        padding: 10px;
+        width: 100px;
+        border-radius: 12px;
+        font-family: retro;
+      }

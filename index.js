@@ -305,7 +305,7 @@ function pageLoad() {
   // sets the canvas width and hight
   canvas.width = width;
   canvas.height = height;
-  canvas.style.background = 'brown';
+  canvas.style.background = 'black';
 
   // first animation request
   // requestAnimationFrame(gameLoop);
@@ -378,8 +378,8 @@ function render() {
   // player debug data
   ctx.font = '20px monospace';
   ctx.fillStyle = 'white';
-  ctx.fillText(`Score: ${score}`, 10, 30);
-  ctx.fillText(`highScore: ${highScore}`, 10, 60);
+  ctx.fillText(`SCORE: ${score}`, 10, 30);
+  ctx.fillText(`HIGH SCORE: ${highScore}`, 10, 60);
   // ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 60);
   // ctx.fillText(`player delta-V: ${Math.trunc(player.velY)}m/s`, 10, 90);
   // ctx.fillText(`FPS: ${fps}`, 10, 120);
