@@ -53,41 +53,45 @@
       }
       .Menu {
         text-align: center;
-        width: 1000px;
+        width: 700px;
         height: 1000 px;
-        padding: 15px;
-        border: 100px;
-        border-color: #cf1020;
+        padding: 6px;
+        border: 11px solid;        
         border-radius: 50px;
         background-image: url("menu bg.gif");
         background-size: 730px;
         background-position: center;
         background-repeat: no-repeat;
         background-position-y: -111px;
+        border-color: #cf1020;
       }
       .score {
         padding: 0px;
         margin-bottom: 5px;
         font-size: 40px;
-        font: bold;
+        font: Retro Computer;
+        font-family: Retro Computer;
       }
       .playButton {
         background: darksalmon;
         padding: 10px;
         width: 100px;
         border-radius: 12px;
+        font-family: Retro Computer;
       }
       .pauseButton {
         background: darksalmon;
         padding: 10px;
         width: 100px;
         border-radius: 12px;
+        font-family: Retro Computer;
       }
       .restartButton {
         background: darksalmon;
         padding: 10px;
         width: 100px;
         border-radius: 12px;
+        font-family: Retro COmputer;
       }
     </style>
   </head>
@@ -104,9 +108,7 @@
         <div>
           <button class="playButton" onclick="playGame('play')">PLAY</button>
           <button class="pauseButton" onclick="playGame('pause')">PAUSE</button>
-          <button class="restartButton" onclick="location.reload()">
-            RESTART
-          </button>
+          <button class="restartButton" onclick="location.reload()">RESTART</button>
         </div>
       </div>
     </div>    
