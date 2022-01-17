@@ -14,6 +14,7 @@ let fps;
 let score = 0;
 let highScore = localStorage.getItem('highScore');
 let gameStart = false;
+let secondsBeforeSpawn = 90;
 let spawnTimer = 0;
 
 // physics constants
@@ -67,7 +68,7 @@ let joystick = {
       case event.keyCode === 80: // pause
         playGame('pause');
         break;
-      case event.keyCode === 82: // pause
+      case event.keyCode === 82: // R - resetHighScore
         resetHighScore();
         break;
     }
@@ -79,7 +80,7 @@ let player = {
   width: playerSize,
   height: playerSize,
   x: Math.trunc(width / 2 - playerSize / 2),
-  y: Math.trunc(height / 2 - playerSize / 2),
+  y: Math.trunc(-100 - playerSize / 2),
   oldX: 0,
   oldY: 0,
   velX: 0,
@@ -146,8 +147,8 @@ let player = {
 // platform array
 const platformArr = [
   {
-    x: Math.trunc(100),
-    y: Math.trunc(height - 150),
+    x: Math.trunc(width / 2 - 100),
+    y: Math.trunc(10),
     velY: 0,
     oldX: 0,
     oldY: 0,
@@ -178,136 +179,8 @@ const platformArr = [
       );
     },
   },
-  {
-    x: Math.trunc(width - 250),
-    y: Math.trunc(height - 340),
-    velY: 0,
-    oldX: 0,
-    oldY: 0,
-    width: 200,
-    height: 200,
-    speed: platformSpeed,
-    PlatformFrameX: 0,
-    PlatformFrameY: 0.29,
-    spriteWidth: 1000,
-    spriteHeight: 1000,
-    counter: 0,
-    update() {
-      this.y += this.speed;
-    },
-
-    draw: function () {
-      ctx.drawImage(
-        dirtTwo,
-        this.spriteWidth * this.PlatformFrameX,
-        this.spriteHeight * this.PlatformFrameY,
-        this.spriteWidth,
-        this.spriteHeight,
-        Math.trunc(this.x),
-        Math.trunc(this.y),
-        this.width,
-        this.height
-      );
-    },
-  },
-  {
-    x: Math.trunc(width / 2 - 150 / 2),
-    y: Math.trunc(height - 90),
-    velY: 0,
-    oldX: 0,
-    oldY: 0,
-    width: 200,
-    height: 200,
-    speed: platformSpeed,
-    PlatformFrameX: 0,
-    PlatformFrameY: 0.29,
-    spriteWidth: 1000,
-    spriteHeight: 1000,
-    counter: 0,
-    update() {
-      this.y += this.speed;
-    },
-
-    draw: function () {
-      ctx.drawImage(
-        dirtTwo,
-        this.spriteWidth * this.PlatformFrameX,
-        this.spriteHeight * this.PlatformFrameY,
-        this.spriteWidth,
-        this.spriteHeight,
-        Math.trunc(this.x),
-        Math.trunc(this.y),
-        this.width,
-        this.height
-      );
-    },
-  },
-  {
-    x: Math.trunc(width / 2 - 150 / 2),
-    y: Math.trunc(height - 250),
-    velY: 0,
-    oldX: 0,
-    oldY: 0,
-    width: 200,
-    height: 200,
-    speed: platformSpeed,
-    PlatformFrameX: 0,
-    PlatformFrameY: 0.29,
-    spriteWidth: 1000,
-    spriteHeight: 1000,
-    counter: 0,
-    update() {
-      this.y += this.speed;
-    },
-
-    draw: function () {
-      ctx.drawImage(
-        dirtTwo,
-        this.spriteWidth * this.PlatformFrameX,
-        this.spriteHeight * this.PlatformFrameY,
-        this.spriteWidth,
-        this.spriteHeight,
-        Math.trunc(this.x),
-        Math.trunc(this.y),
-        this.width,
-        this.height
-      );
-    },
-  },
-  {
-    x: Math.trunc(width / 2 - 150 / 2),
-    y: Math.trunc(height - 490),
-    velY: 0,
-    oldX: 0,
-    oldY: 0,
-    width: 200,
-    height: 200,
-    speed: platformSpeed,
-
-    PlatformFrameX: 0,
-    PlatformFrameY: 0.29,
-    spriteWidth: 1000,
-    spriteHeight: 1000,
-    counter: 0,
-    update() {
-      this.y += this.speed;
-    },
-
-    draw: function () {
-      ctx.drawImage(
-        dirtTwo,
-        this.spriteWidth * this.PlatformFrameX,
-        this.spriteHeight * this.PlatformFrameY,
-        this.spriteWidth,
-        this.spriteHeight,
-        Math.trunc(this.x),
-        Math.trunc(this.y),
-        this.width,
-        this.height
-      );
-    },
-  },
 ];
+
 //new platforms that's going to be spawned above the canvas
 class newPlatform {
   constructor() {
@@ -429,7 +302,7 @@ function pageLoad() {
   canvas = document.querySelector('canvas');
   ctx = canvas.getContext('2d');
 
-  // sets the canvas width and hight dynamically
+  // sets the canvas width and hight
   canvas.width = width;
   canvas.height = height;
   canvas.style.background = 'brown';
@@ -495,7 +368,7 @@ function render() {
   lava.draw();
   gameOver();
 
-  // debug render trackers
+  // debug render trackers //
 
   // addLineTrack(player, platform);
   // addLineBoundaries(platform);
@@ -535,35 +408,35 @@ function resetHighScore() {
 let jump;
 let touchLava;
 let bgMusic;
-function gamesound(src) {
-  this.gamesound = document.createElement("audio");
-  this.gamesound.src = src;
-  this.gamesound.setAttribute("preload", "auto");
-  this.gamesound.setAttribute("controls", "none");
-  this.gamesound.style.display = "none";
-  document.body.appendChild(this.gamesound);
+function gameSound(src) {
+  this.gameSound = document.createElement('audio');
+  this.gameSound.src = src;
+  this.gameSound.setAttribute('preload', 'auto');
+  this.gameSound.setAttribute('controls', 'none');
+  this.gameSound.style.display = 'none';
+  document.body.appendChild(this.gameSound);
   this.play = function () {
-    this.gamesound.play();
-  }
+    this.gameSound.play();
+  };
   this.stop = function () {
-    this.gamesound.pause();
-  }
-};
+    this.gameSound.pause();
+  };
+}
 
 // start or pause the game
 function playGame(val) {
   if (val === 'play') {
-    requestAnimationFrame(gameLoop);  
-    jump = new gamesound("SFX/jump.wav");
-    touchLava = new gamesound("SFX/gameOver.wav"); 
-    bgMusic= new gamesound("SFX/bgMusic.mp3"); 
-    bgMusic.play();    
+    requestAnimationFrame(gameLoop);
+    jump = new gameSound('SFX/jump.wav');
+    touchLava = new gameSound('SFX/gameOver.wav');
+    bgMusic = new gameSound('SFX/bgMusic.mp3');
+    bgMusic.play();
     gameStart = true;
     document.getElementById('mainMenu').style.display = 'none';
   }
 
   if (val === 'pause') {
-    bgMusic.stop();    
+    bgMusic.stop();
     gameStart = false;
     document.getElementById('score').innerHTML = score;
     document.getElementById('highScore').innerHTML = highScore;
@@ -580,8 +453,16 @@ function playGame(val) {
 function addPlatforms() {
   //timer for the platform to be spawned
   spawnTimer++;
-  if (spawnTimer === 90) {
+  if (spawnTimer === secondsBeforeSpawn) {
     spawnTimer = 0;
+
+    // if player is way above y indentation is increased
+    if (player.y < 100) {
+      secondsBeforeSpawn = 175;
+    } else {
+      secondsBeforeSpawn = 90;
+    }
+
     platformArr.push(new newPlatform());
   }
   for (let i = 0; i < platformArr.length; i++) {
@@ -599,7 +480,7 @@ function addPlatforms() {
 
 //gameOver if the player reach the lava
 function gameOver() {
-  if (player.y > 430) {  
+  if (player.y > 430) {
     touchLava.play();
     bgMusic.stop();
     gameStart = false;

@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Game Title</title>
-    <meta name="description" content="Final Project for SE-1" />
+    <title>The Floor is lava</title>
+    <meta name="description" content="Final Project for SE-1 made by team riot" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       /* style here */
@@ -31,6 +31,11 @@
         background-color: rgb(29, 0, 0);
       }
 
+      .score, p {
+        color: white;
+        font-family: monospace;
+      }
+
       .parentDiv {
         width: 100%;
         height: 100%;
@@ -50,15 +55,15 @@
         text-align: center;
         width: 1000px;
         height: 1000 px;
-        padding: 6px;
+        padding: 15px;
         border: 100px;
         border-color: #cf1020;
         border-radius: 50px;
-      background-image: url("menu bg.gif");
-      background-size: 730px;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-position-y: -111px;
+        background-image: url("menu bg.gif");
+        background-size: 730px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-position-y: -111px;
       }
       .score {
         padding: 0px;
@@ -110,6 +115,7 @@
         <!-- alternate text when canvas is not supported -->
         Canvas is not supported in your browser.
       </canvas>
+    </div>
     <div class="controls">
       Keyboard Controls </br>
       WASD - movement | R - reset high score | P - pause
