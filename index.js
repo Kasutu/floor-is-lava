@@ -16,6 +16,7 @@ let highScore = localStorage.getItem('highScore');
 let gameStart = false;
 let secondsBeforeSpawn = 90;
 let spawnTimer = 0;
+let isGameOver = false;
 
 // physics constants
 // only affects player
@@ -75,12 +76,15 @@ let joystick = {
   },
 };
 
+let playerInitialX = Math.trunc(width / 2 - playerSize / 2);
+let playerInitialY = Math.trunc(-100 - playerSize / 2);
+
 // properties
 let player = {
   width: playerSize,
   height: playerSize,
-  x: Math.trunc(width / 2 - playerSize / 2),
-  y: Math.trunc(-100 - playerSize / 2),
+  x: playerInitialX,
+  y: playerInitialY,
   oldX: 0,
   oldY: 0,
   velX: 0,
@@ -141,45 +145,45 @@ let player = {
   },
 };
 
+let initialPlatform = {
+  x: Math.trunc(width / 2 - 100),
+  y: Math.trunc(10),
+  velY: 0,
+  oldX: 0,
+  oldY: 0,
+  width: 200,
+  height: 200,
+  speed: platformSpeed,
+  //Platform sheet variables
+  PlatformFrameX: 0,
+  PlatformFrameY: 0.29,
+  spriteWidth: 1000,
+  spriteHeight: 1000,
+  counter: 0,
+  update() {
+    this.y += this.speed;
+  },
+
+  draw: function () {
+    ctx.drawImage(
+      dirtTwo,
+      this.spriteWidth * this.PlatformFrameX,
+      this.spriteHeight * this.PlatformFrameY,
+      this.spriteWidth,
+      this.spriteHeight,
+      Math.trunc(this.x),
+      Math.trunc(this.y),
+      this.width,
+      this.height
+    );
+  },
+};
+
 // defines what platform to add in the map
 // push the random x values into the array
 // para pure random 😄
 // platform array
-const platformArr = [
-  {
-    x: Math.trunc(width / 2 - 100),
-    y: Math.trunc(10),
-    velY: 0,
-    oldX: 0,
-    oldY: 0,
-    width: 200,
-    height: 200,
-    speed: platformSpeed,
-    //Platform sheet variables
-    PlatformFrameX: 0,
-    PlatformFrameY: 0.29,
-    spriteWidth: 1000,
-    spriteHeight: 1000,
-    counter: 0,
-    update() {
-      this.y += this.speed;
-    },
-
-    draw: function () {
-      ctx.drawImage(
-        dirtTwo,
-        this.spriteWidth * this.PlatformFrameX,
-        this.spriteHeight * this.PlatformFrameY,
-        this.spriteWidth,
-        this.spriteHeight,
-        Math.trunc(this.x),
-        Math.trunc(this.y),
-        this.width,
-        this.height
-      );
-    },
-  },
-];
+let platformArr = [initialPlatform];
 
 //new platforms that's going to be spawned above the canvas
 class newPlatform {
@@ -378,8 +382,8 @@ function render() {
   // player debug data
   ctx.font = '20px monospace';
   ctx.fillStyle = 'white';
-  ctx.fillText(`SCORE: ${score}`, 10, 30);
-  ctx.fillText(`HIGH SCORE: ${highScore}`, 10, 60);
+  ctx.fillText(`SCORE: ${Math.trunc(score)}`, 10, 30);
+  ctx.fillText(`HIGH SCORE: ${Math.trunc(highScore)}`, 10, 60);
   // ctx.fillText(`Elapsed: ${elapsedTime}s`, 10, 60);
   // ctx.fillText(`player delta-V: ${Math.trunc(player.velY)}m/s`, 10, 90);
   // ctx.fillText(`FPS: ${fps}`, 10, 120);
@@ -395,9 +399,7 @@ addEventListener('keyup', joystick.inputListener);
 
 function saveHighScore() {
   if (score > highScore) {
-    localStorage.setItem('highScore', score);
-  } else {
-    localStorage.setItem('highScore', score);
+    localStorage.setItem('highScore', parseInt(score));
   }
 }
 
@@ -439,8 +441,11 @@ function playGame(val) {
   if (val === 'pause') {
     bgMusic.stop();
     gameStart = false;
-    document.getElementById('score').innerHTML = score;
-    document.getElementById('highScore').innerHTML = highScore;
+
+    let IntScore = parseInt(score);
+
+    document.getElementById('score').innerHTML = IntScore;
+    document.getElementById('highScore').innerHTML = parseInt(highScore);
     document.getElementById('mainMenu').style.display = 'flex';
   }
 
@@ -485,10 +490,21 @@ function gameOver() {
     touchLava.play();
     bgMusic.stop();
     gameStart = false;
-    document.getElementById('score').innerHTML = score;
-    document.getElementById('highScore').innerHTML = highScore;
+    document.getElementById('score').innerHTML = parseInt(score);
+    document.getElementById('highScore').innerHTML = parseInt(highScore);
     document.getElementById('mainMenu').style.display = 'flex';
+
+    isGameOver = true;
   }
+}
+
+function playButtonHandler() {
+  if (isGameOver) {
+    location.reload();
+    playGame('play');
+  }
+
+  playGame('play');
 }
 
 /* =========== customEngine ============ */
@@ -608,7 +624,8 @@ function collisionEngine(player, platform) {
       player.isUnder = false;
       player.isOnPlatform = true;
       player.isOutSide = false;
-      score++;
+
+      score += 0.01;
     }
   }
 }
