@@ -187,6 +187,14 @@ let platformArr = [initialPlatform];
 
 //new platforms that's going to be spawned above the canvas
 class newPlatform {
+  PlatformFrameX = 0;
+  PlatformFrameY = 0.29;
+  spriteWidth = 1000;
+  spriteHeight = 1000;
+  counter = 0;
+  width = 200;
+  height = 200;
+
   constructor() {
     //this will make the platform spawn random in X-axis
     this.x = Math.random() * (width - 300) + 15;
@@ -195,13 +203,6 @@ class newPlatform {
     this.radius = 50;
     this.speed = platformSpeed;
     this.distance;
-    (this.PlatformFrameX = 0),
-      (this.PlatformFrameY = 0.29),
-      (this.spriteWidth = 1000),
-      (this.spriteHeight = 1000),
-      (this.counter = 0),
-      (this.width = 200),
-      (this.height = 200);
   }
   update() {
     this.y += this.speed;
@@ -625,7 +626,7 @@ function collisionEngine(player, platform) {
       player.isOnPlatform = true;
       player.isOutSide = false;
 
-      score += 0.01;
+      score += 0.05;
     }
   }
 }
