@@ -1,0 +1,21 @@
+{
+  "name": "floor-is-lava",
+  "version": "1.0.0",
+  "description": "final project for SE first sem",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeromecabugwason/floor-is-lava.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jeromecabugwason/floor-is-lava/issues"
+  },
+  "homepage": "https://github.com/jeromecabugwason/floor-is-lava#readme"
+}

@@ -9,7 +9,7 @@ let height = 500;
 // gameLoop vars
 let currentTime = Date.now();
 let elapsedTime;
-let lastFrame = 0;
+let lastFrame = performance.now();
 let fps;
 let score = 0;
 let highScore = localStorage.getItem('highScore');
@@ -24,8 +24,8 @@ let isGameOver = false;
 const friction = 0.85;
 const airborneFriction = 0.92;
 const gravity = 0.7;
-const jumpHeight = 2.9;
-const movementSpeed = 5.5;
+const jumpHeight = 2.9 + score / 100 ;
+const movementSpeed = 5.5 + score / 100;
 
 // entity creation
 let playerSize = 32 * 1.8;
@@ -205,7 +205,7 @@ class newPlatform {
     this.distance;
   }
   update() {
-    this.y += this.speed;
+    this.y += this.speed + score / 100;
   }
   draw() {
     ctx.drawImage(
@@ -321,19 +321,19 @@ function pageLoad() {
 }
 
 // the game loop
+const TARGET_FRAME_TIME = 13; // 60 fps in ms
+let lag = 0;
+
 function gameLoop(currentTime) {
-  // Calculate how much time has passed
-  delta = (currentTime - lastFrame) / 1000;
+  const elapsed = currentTime - lastFrame;
   lastFrame = currentTime;
-  elapsedTime = Math.trunc(lastFrame / 1000);
+  lag += elapsed;
 
-  // Calculate fps
-  fps = Math.round(1 / delta);
-
-  // Pass the delta time to the update
-  // Game logic here
-  update(delta);
-  render();
+  while (lag >= TARGET_FRAME_TIME) {
+    update(TARGET_FRAME_TIME / 1000); // Pass fixed timestep
+    render();
+    lag -= TARGET_FRAME_TIME;
+  }
 
   if (gameStart) {
     requestAnimationFrame(gameLoop);
@@ -472,9 +472,9 @@ function addPlatforms() {
 
     platformArr.push(new newPlatform());
   }
-  for (let i = 0; i < platformArr.length; i++) {
-    platformArr[i].update();
-    platformArr[i].draw();
+  for (const element of platformArr) {
+    element.update();
+    element.draw();
   }
 
   //delete platform outside the canvas
