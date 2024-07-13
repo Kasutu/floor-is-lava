@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "final project for SE first sem",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx ws --spa index.html"
   },
   "repository": {
     "type": "git",
@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/jeromecabugwason/floor-is-lava/issues"
   },
-  "homepage": "https://github.com/jeromecabugwason/floor-is-lava#readme"
+  "homepage": "https://github.com/jeromecabugwason/floor-is-lava#readme",
+  "dependencies": {
+    "local-web-server": "^5.3.3"
+  }
 }
